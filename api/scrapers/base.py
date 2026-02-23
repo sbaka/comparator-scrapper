@@ -23,6 +23,13 @@ class BaseScraper(ABC):
         """Return the name of the source website (e.g. 'amazon')."""
         ...
 
+    @property
+    @abstractmethod
+    def base_url(self) -> str:
+        """Return the base URL of the source website."""
+        ...
+
+
     @abstractmethod
     async def scrape(self, product_name: str) -> list[ProductResult]:
         """

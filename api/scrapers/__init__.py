@@ -1,5 +1,4 @@
-from .fake import FakeScraper
-
+from .licb import LICBScraper
 SCRAPERS = [
-    FakeScraper(),
+    LICBScraper(),
 ]
