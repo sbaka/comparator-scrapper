@@ -1,29 +1,27 @@
 import Image from "next/image";
 
 export default async function Home() {
-  const role = await fetchEngineerRole();
+  const role = await fetchProducts();
 
   return (
     <>
-      <div>{`The main skill of a ${role.title} is ${role.mainskill}.`}</div>
+      <div>{`Products: ${JSON.stringify(role)}`}</div>
     </>
   );
 }
 
-async function fetchEngineerRole() {
+async function fetchProducts() {
   const baseUrl = "http://localhost:3000";
 
   try {
-    const response = await fetch(
-      `${baseUrl}/api/py/engineer-roles?title=${"Software Architect"}`,
-    );
+    const response = await fetch(`${baseUrl}/api/py/products?query=${"test"}`);
     if (!response.ok) {
       throw new Error("Failed to fetch data");
     }
     const role = await response.json();
     return role;
   } catch (error) {
-    console.error("Error fetching engineer role:", error);
+    console.error("Error fetching products:", error);
     return null;
   }
 }

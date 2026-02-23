@@ -1,22 +1,31 @@
-from fastapi import FastAPI
 
-ENGINEER_ROLES = [
-    {'title': 'Frontend Developer', 'mainskill': 'React'},
-    {'title': 'Backend Developer', 'mainskill': 'Node.js'},
-    {'title': 'Fullstack Developer', 'mainskill': 'Next.js'},
-    {'title': 'Machine Learning Engineer', 'mainskill': 'Tensorflow'},
-    {'title': 'Data Scientist', 'mainskill': 'Apache Spark'},
-    {'title': 'Software Architect', 'mainskill': 'System Analysis'},
-]
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Any
+import asyncio
+from .scrapers import SCRAPERS
 
-# Create FastAPI instance with custom docs
 app = FastAPI(docs_url="/api/py/docs")
 
 
-@app.get("/api/py/engineer-roles")
-async def read_category_by_query(title: str):
-    role_to_return = None
-    for role in ENGINEER_ROLES:
-        if role.get('title').casefold() == title.casefold():
-            role_to_return = role
-    return role_to_return
+class ProductResultModel(BaseModel):
+    name: str
+    price: float
+    link: str
+    source: str
+
+@app.get("/api/py/products", response_model=dict)
+async def list_products(query: str = None):
+    if not query:
+        raise HTTPException(status_code=400, detail="Query parameter 'query' is required.")
+
+    # Run all scrapers concurrently
+    tasks = [scraper.scrape(query) for scraper in SCRAPERS]
+    results_nested = await asyncio.gather(*tasks)
+    # Flatten results
+    results = [item for sublist in results_nested for item in sublist]
+    # Convert to dicts for JSON serialization
+    results_dicts = [ProductResultModel(**vars(r)).dict() for r in results]
+    # Sort by price ascending
+    results_dicts.sort(key=lambda x: x['price'])
+    return {"product": query, "results": results_dicts}
