@@ -8,6 +8,7 @@ class ProductResult:
     name: str
     price: float
     link: str
+    image_url: str
     source: str  # e.g. "amazon", "ebay"
 
 

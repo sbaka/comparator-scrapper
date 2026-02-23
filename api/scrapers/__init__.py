@@ -1,4 +1,4 @@
-from .licb import LICBScraper
+from .licbplus import LICBScraper
 SCRAPERS = [
     LICBScraper(),
 ]

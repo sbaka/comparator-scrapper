@@ -10,7 +10,7 @@ app = FastAPI(docs_url="/api/py/docs")
 
 class ProductResultModel(BaseModel):
     name: str
-    price: float
+    price: str
     link: str
     source: str
 
