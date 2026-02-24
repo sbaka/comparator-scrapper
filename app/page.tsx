@@ -14,7 +14,7 @@ async function fetchProducts() {
   const baseUrl = "http://localhost:3000";
 
   try {
-    const response = await fetch(`${baseUrl}/api/py/products?query=${"test"}`);
+    const response = await fetch(`${baseUrl}/api/py/products?query=${"rtx 5060"}`);
     if (!response.ok) {
       throw new Error("Failed to fetch data");
     }

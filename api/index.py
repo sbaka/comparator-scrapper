@@ -12,6 +12,7 @@ class ProductResultModel(BaseModel):
     name: str
     price: str
     link: str
+    image_url: str
     source: str
 
 @app.get("/api/py/products", response_model=dict)

@@ -1,4 +1,10 @@
-from .licbplus import LICBScraper
+from .gamingsetif import GamingsetifScrapper
+from .licbplus import LicbScraper
+from .informaticsdz import InformaticsdzScraper
+
 SCRAPERS = [
-    LICBScraper(),
+    LicbScraper(),
+    InformaticsdzScraper(),
+    GamingsetifScrapper()
+
 ]
