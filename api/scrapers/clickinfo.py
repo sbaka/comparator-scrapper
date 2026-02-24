@@ -1,6 +1,8 @@
+
 from .base import BaseScraper, ProductResult
 from bs4 import BeautifulSoup
 import requests
+from itertools import count
 
 class ClickinfoScraper(BaseScraper):
     @property
@@ -8,29 +10,27 @@ class ClickinfoScraper(BaseScraper):
         return "click-informatique"
     @property
     def base_url(self) -> str:
-        return "https://click-dz.com/page{num}?s={query}&post_type=product&type_aws=true&per_page=24"
+        return "https://click-dz.com/page/{num}/?s={query}&post_type=product&type_aws=true&per_page=24"
 
     async def scrape(self, product_name: str) -> list[ProductResult]:
         scraped_products = []
-        page_num = 1
-        
-        while True:
+        for page_num in count(1):
             # Construct URL with page number
-            url = self.base_url.format(query=product_name,num=page_num)
+            url = self.base_url.format(query=product_name, num=page_num)
             page = requests.get(url)
             soup = BeautifulSoup(page.content, "html.parser")
-            
+
             # Find the product grid
             results = soup.find("div", class_="products wd-products wd-grid-g grid-columns-3 elements-grid pagination-pagination")
-           
+
             # Find all product cards inside the grid
             products = results.find_all("div", class_="wd-product") if results else []
             print(f'im in clickinfo page {page_num}', len(products))
-            
+
             # If no products found, break the loop
             if not products:
                 break
-            
+
             # Process each product on this page
             for product in products:
                 # Get the price from .product-price > span (first span)
@@ -38,7 +38,7 @@ class ClickinfoScraper(BaseScraper):
                 price = price_div.get_text(strip=True) if price_div else "N/A"
                 if price == 'N/A':
                     continue
-                
+
                 # Get the product name from h3.mt-1 > a, excluding <span> labels like 'New'
                 h3 = product.find("h3", class_="wd-entities-title")
                 a_tag = h3.find("a") if h3 else None
@@ -65,13 +65,11 @@ class ClickinfoScraper(BaseScraper):
                         source=self.source_name
                     )
                 )
-            
+
             # Check if there's a next page
             next_page_link = soup.find("a", class_="next page-numbers")
             if not next_page_link:
                 break
-            
-            page_num += 1
 
         return scraped_products
 

@@ -4,7 +4,7 @@ from .licbplus import LicbScraper
 from .informaticsdz import InformaticsdzScraper
 
 SCRAPERS = [
-    ClickinfoScraper(),
+    #ClickinfoScraper(),
     #LicbScraper(),
     #InformaticsdzScraper(),
     #GamingsetifScrapper(), 

@@ -1,5 +1,6 @@
 from .base import BaseScraper, ProductResult
 from bs4 import BeautifulSoup
+from itertools import count
 import requests
 
 class GamingsetifScrapper(BaseScraper):
@@ -8,52 +9,61 @@ class GamingsetifScrapper(BaseScraper):
         return "gaming-setif"
     @property
     def base_url(self) -> str:
-        return "https://www.gamingdz.com/search?category=all&search={query}"
+        return "https://www.gamingdz.com/search?category=all&search={query}&page={page}"
 
     async def scrape(self, product_name: str) -> list[ProductResult]:
-        page = requests.get(self.base_url.format(query=product_name))
-        soup = BeautifulSoup(page.content, "html.parser")
-        
-        # Find the product grid
-        results = soup.find("div", class_="row product-grid-3")
-        # Find all product cards inside the grid
-        products = results.find_all("div", class_="product-cart-wrap mb-30") if results else []
-        print('im in gaming-setif')
         scraped_products = []
-        for product in products:
-            
-            # Get the price from .product-price > span (first span)
-            price_div = product.find("div", class_="product-price")
-            price = price_div.find("span").get_text(strip=True) if price_div and price_div.find("span") else "N/A"
-            if (price=='0.00 DA'):
-                continue
-            
-            # Get the product name from h2.mt-1 > a, excluding <span> labels like 'New'
-            h2 = product.find("h2")
-            a_tag = h2.find("a") if h2 else None
-            if a_tag:
-                # Remove all <span> tags (like 'New') from the <a> tag
-                for span in a_tag.find_all("span"):
-                    span.extract()
-                name = a_tag.get_text(strip=True)
-            else:
-                name = h2.get_text(strip=True) if h2 else "N/A"
-            link = a_tag["href"] if a_tag and a_tag.has_attr("href") else "N/A"
+        for page_num in count(1):
+            page = requests.get(self.base_url.format(query=product_name, page=page_num))
+            soup = BeautifulSoup(page.content, "html.parser")
 
-            # Get the image URL from .product-img > a > img
-            img_wrap = product.find("div", class_="product-img product-img-zoom")
-            img_tag = img_wrap.find("img", class_="default-img") if img_wrap else None
-            img_url = img_tag["src"] if img_tag and img_tag.has_attr("src") else "N/A"
-            
-            scraped_products.append(
-                ProductResult(
-                    name=name,
-                    price=price,
-                    link=link,
-                    image_url=img_url,
-                    source=self.source_name
+            # Find the product grid
+            results = soup.find("div", class_="row product-grid-3")
+            # Find all product cards inside the grid
+            products = results.find_all("div", class_="product-cart-wrap mb-30") if results else []
+            print(f'im in gaming-setif page {page_num}')
+
+            if not products:
+                break
+
+            for product in products:
+                # Get the price from .product-price > span (first span)
+                price_div = product.find("div", class_="product-price")
+                price = price_div.find("span").get_text(strip=True) if price_div and price_div.find("span") else "N/A"
+                if price == '0.00 DA':
+                    continue
+
+                # Get the product name from h2.mt-1 > a, excluding <span> labels like 'New'
+                h2 = product.find("h2")
+                a_tag = h2.find("a") if h2 else None
+                if a_tag:
+                    # Remove all <span> tags (like 'New') from the <a> tag
+                    for span in a_tag.find_all("span"):
+                        span.extract()
+                    name = a_tag.get_text(strip=True)
+                else:
+                    name = h2.get_text(strip=True) if h2 else "N/A"
+                link = a_tag["href"] if a_tag and a_tag.has_attr("href") else "N/A"
+
+                # Get the image URL from .product-img > a > img
+                img_wrap = product.find("div", class_="product-img product-img-zoom")
+                img_tag = img_wrap.find("img", class_="default-img") if img_wrap else None
+                img_url = img_tag["src"] if img_tag and img_tag.has_attr("src") else "N/A"
+
+                scraped_products.append(
+                    ProductResult(
+                        name=name,
+                        price=price,
+                        link=link,
+                        image_url=img_url,
+                        source=self.source_name
+                    )
                 )
-            )
+
+            # Stop if there is no Next button
+            next_button = soup.find("button", string=lambda s: s and 'Next' in s)
+            if not next_button:
+                break
 
         return scraped_products
 
