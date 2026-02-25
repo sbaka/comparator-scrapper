@@ -1,61 +1,44 @@
-
-from .base import BaseScraper, ProductResult
+from ..base import BaseScraper, ProductResult
 from bs4 import BeautifulSoup
 import requests
 from itertools import count
 
-class ClickinfoScraper(BaseScraper):
+class InformaticsdzScraper(BaseScraper):
     @property
     def source_name(self) -> str:
-        return "click-informatique"
+        return "informatics-dz"
     @property
     def base_url(self) -> str:
-        return "https://click-dz.com/page/{num}/?s={query}&post_type=product&type_aws=true&per_page=24"
+        return "https://informatics-dz.com/page/{page}/?s={query}&post_type=product&stock_status=instock"
 
     async def scrape(self, product_name: str) -> list[ProductResult]:
         scraped_products = []
         for page_num in count(1):
-            # Construct URL with page number
-            url = self.base_url.format(query=product_name, num=page_num)
+            url = self.base_url.format(query=product_name, page=page_num)
             page = requests.get(url)
             soup = BeautifulSoup(page.content, "html.parser")
-
-            # Find the product grid
+            print(f'im in informatics-dz page {page_num}')
             results = soup.find("div", class_="products wd-products wd-grid-g grid-columns-3 elements-grid pagination-pagination")
-
-            # Find all product cards inside the grid
-            products = results.find_all("div", class_="wd-product") if results else []
-            print(f'im in clickinfo page {page_num}', len(products))
-
-            # If no products found, break the loop
+            products = results.find_all("div", class_="product-wrapper") if results else []
             if not products:
                 break
-
-            # Process each product on this page
             for product in products:
-                # Get the price from .product-price > span (first span)
-                price_div = product.find("span", class_="price")
+                price_div = product.find("bdi")
                 price = price_div.get_text(strip=True) if price_div else "N/A"
                 if price == 'N/A':
                     continue
-
-                # Get the product name from h3.mt-1 > a, excluding <span> labels like 'New'
                 h3 = product.find("h3", class_="wd-entities-title")
                 a_tag = h3.find("a") if h3 else None
                 if a_tag:
-                    # Remove all <span> tags (like 'New') from the <a> tag
                     for span in a_tag.find_all("span"):
                         span.extract()
                     name = a_tag.get_text(strip=True)
                 else:
                     name = h3.get_text(strip=True) if h3 else "N/A"
                 link = a_tag["href"] if a_tag and a_tag.has_attr("href") else "N/A"
-
-                # Get the image URL from .product-img > a > img
-                img_wrap = product.find("div", class_="product-element-top wd-quick-shop")
-                img_tag = img_wrap.find("img") if img_wrap else None
-                img_url = img_tag["src"] if img_tag and img_tag.has_attr("src") else "N/A"
-
+                img_wrap = product.find("a", class_="product-image-link")
+                img_tag = img_wrap.find("img", class_="attachment-woocommerce_thumbnail") if img_wrap else None
+                img_url = img_tag["data-src"] if img_tag and img_tag.has_attr("src") else "N/A"
                 scraped_products.append(
                     ProductResult(
                         name=name,
@@ -65,15 +48,7 @@ class ClickinfoScraper(BaseScraper):
                         source=self.source_name
                     )
                 )
-
-            # Check if there's a next page
             next_page_link = soup.find("a", class_="next page-numbers")
             if not next_page_link:
                 break
-
         return scraped_products
-
-
-
-
-

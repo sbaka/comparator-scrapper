@@ -1,13 +1,5 @@
-from .clickinfo import ClickinfoScraper
-from .gamingsetif import GamingsetifScrapper
-from .licbplus import LicbScraper
-from .informaticsdz import InformaticsdzScraper
+from .hardware import SCRAPERS as HARDWARE_SCRAPERS
 
 SCRAPERS = [
-    #ClickinfoScraper(),
-    #LicbScraper(),
-    #InformaticsdzScraper(),
-    #GamingsetifScrapper(), 
-    
+    *HARDWARE_SCRAPERS,
 ]
-    

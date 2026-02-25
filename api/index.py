@@ -1,8 +1,13 @@
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Any
 import asyncio
+
+from .scrapers.hardware.clickinfo import ClickinfoScraper
+from .scrapers.hardware.gamingsetif import GamingsetifScrapper
+from .scrapers.hardware.licbplus import LicbScraper
+from .scrapers.hardware.informaticsdz import InformaticsdzScraper
+
 from .scrapers import SCRAPERS
 
 app = FastAPI(docs_url="/api/py/docs")
