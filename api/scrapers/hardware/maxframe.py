@@ -22,22 +22,12 @@ class MaxframeScraper(BaseScraper):
         print('im in maxframe ', len(products))
         for product in products:
             price_div = product.find("span", class_="price")
-            price_str = price_div.get_text(strip=True) if price_div else "N/A"
-            if price_str == 'N/A':
+            price = price_div.get_text(strip=True) if price_div else "N/A"
+            if price == 'N/A':
                     continue
-            # Convert price string to float, removing non-numeric characters
-            try:
-                price = float(''.join(c for c in price_str if c.isdigit() or c == '.'))
-            except ValueError:
-                continue
             title = product.find("span", class_="t")
-            a_tag = product.find("a") if title else None
-            if a_tag:
-                for span in a_tag.find_all("span"):
-                    span.extract()
-                name = a_tag.get_text(strip=True)
-            else:
-                name = title.get_text(strip=True) if title else "N/A"
+            name = title.get_text(strip=True) if title else "N/A"
+            a_tag = product.find("a")
             link = a_tag["href"] if a_tag and a_tag.has_attr("href") else "N/A"
                 
             img_tag = a_tag.find("img") if a_tag else None
