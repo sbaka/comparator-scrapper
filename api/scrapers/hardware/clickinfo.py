@@ -1,6 +1,7 @@
 from ..base import BaseScraper, ProductResult
 from bs4 import BeautifulSoup
-import requests
+import asyncio
+import aiohttp
 from itertools import count
 
 class ClickinfoScraper(BaseScraper):
@@ -12,20 +13,23 @@ class ClickinfoScraper(BaseScraper):
         return "https://click-dz.com/page/{num}/?s={query}&post_type=product&type_aws=true&per_page=24"
 
     async def scrape(self, product_name: str) -> list[ProductResult]:
-        scraped_products = []
-        for page_num in count(1):
-            url = self.base_url.format(query=product_name, num=page_num)
-            page = requests.get(url)
-            soup = BeautifulSoup(page.content, "html.parser")
+        import time
+        import aiohttp
+        import asyncio
+        start = time.time()
+        all_products = []
+
+        async def fetch(session, url):
+            async with session.get(url) as response:
+                return await response.text()
+
+        def parse(soup):
+            products = []
             results = soup.find("div", class_="products wd-products wd-grid-g grid-columns-3 elements-grid pagination-pagination")
-            products = results.find_all("div", class_="wd-product") if results else []
-            print(f'im in clickinfo page {page_num}', len(products))
-            if not products:
-                break
-            for product in products:
+            for product in results.find_all("div", class_="wd-product") if results else []:
                 price_div = product.find("span", class_="price")
                 price = price_div.get_text(strip=True) if price_div else "N/A"
-                if price == 'N/A':
+                if price == "N/A":
                     continue
                 h3 = product.find("h3", class_="wd-entities-title")
                 a_tag = h3.find("a") if h3 else None
@@ -38,17 +42,33 @@ class ClickinfoScraper(BaseScraper):
                 link = a_tag["href"] if a_tag and a_tag.has_attr("href") else "N/A"
                 img_wrap = product.find("div", class_="product-element-top wd-quick-shop")
                 img_tag = img_wrap.find("img") if img_wrap else None
-                img_url = img_tag["src"] if img_tag and img_tag.has_attr("src") else "N/A"
-                scraped_products.append(
-                    ProductResult(
-                        name=name,
-                        price=price,
-                        link=link,
-                        image_url=img_url,
-                        source=self.source_name
-                    )
-                )
-            next_page_link = soup.find("a", class_="next page-numbers")
-            if not next_page_link:
-                break
-        return scraped_products
+                img_url = img_tag.get("src", "N/A") if img_tag else "N/A"
+                products.append(ProductResult(
+                    name=name, price=price, link=link,
+                    image_url=img_url, source=self.source_name
+                ))
+            return products
+
+        async with aiohttp.ClientSession() as session:
+            first_soup = BeautifulSoup(await fetch(session, self.base_url.format(query=product_name, num=1)), "lxml")
+
+            total_pages = 1
+            pagination = first_soup.find("ul", class_="page-numbers")
+            if pagination:
+                for item in pagination.find_all(["a", "span"], class_="page-numbers"):
+                    text = item.get_text(strip=True)
+                    if text.isdigit():
+                        total_pages = max(total_pages, int(text))
+
+            all_products.extend(parse(first_soup))
+
+            if total_pages > 1:
+                pages_html = await asyncio.gather(*[
+                    fetch(session, self.base_url.format(query=product_name, num=p))
+                    for p in range(2, total_pages + 1)
+                ])
+                for html in pages_html:
+                    all_products.extend(parse(BeautifulSoup(html, "lxml")))
+
+        print(f"Execution time: {time.time() - start:.2f}s | Products: {len(all_products)}")
+        return all_products

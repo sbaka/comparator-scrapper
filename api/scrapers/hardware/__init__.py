@@ -7,10 +7,10 @@ from .licbplus import LicbScraper
 from .informaticsdz import InformaticsdzScraper
 
 SCRAPERS = [
-	#ClickinfoScraper(),
-    MaxframeScraper(),
-    #DracheshopScraper(),
-	#LicbScraper(),
-	#InformaticsdzScraper(),
+	ClickinfoScraper(),
+    #MaxframeScraper(),
+    DracheshopScraper(),
+	LicbScraper(),
+	InformaticsdzScraper(),
 	#GamingsetifScrapper(),
 ]
