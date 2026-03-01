@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"excalidraw-mcp": {
+			"url": "https://mcp.excalidraw.com",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
