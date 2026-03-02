@@ -13,7 +13,9 @@ export default async function Home() {
 async function carwl() {
   const baseUrl = "http://localhost:3000";
 
-  const response = await fetch(`${baseUrl}/crawl`, {
+  console.log(`${baseUrl}/api/py/crawl`);
+
+  const response = await fetch(`${baseUrl}/api/py/crawl`, {
     method: "GET",
   });
   return "running";

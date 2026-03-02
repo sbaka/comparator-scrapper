@@ -9,7 +9,7 @@ from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 
 class WebcrawlerPipeline:
-    def process_item(self, item, spider):
+    def process_item(self, item):
         return item
 
 
@@ -30,7 +30,7 @@ class duplicatesPipeline:
     def __init__(self):
         self.seen_links = set()
 
-    def process_item(self, item, spider):
+    def process_item(self, item):
         adapter = ItemAdapter(item)
         link = adapter.get('link')
         if link in self.seen_links:
