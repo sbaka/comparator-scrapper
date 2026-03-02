@@ -1,6 +1,7 @@
 from scrapy.spiders import SitemapSpider
 
 from comparator_scrapper.items import ComparatorScrapperItem
+from comparator_scrapper.itemloaders import ComparatorScrapperItemLoader
 
 
 class ClickinfoSpider(SitemapSpider):
@@ -13,11 +14,9 @@ class ClickinfoSpider(SitemapSpider):
     sitemap_follow = ["product-sitemap"]
 
     def parse_product(self, response):
-        item = ComparatorScrapperItem()
-        item["name"] = response.css("h1.product_title::text").get("").strip()
-        item["link"] = response.url
-        item["price"] = response.css("p.price bdi::text").get("").strip()
-        item["image_url"] = response.css(
-            ".woocommerce-product-gallery img::attr(src)"
-        ).get("")
-        yield item
+        loader = ComparatorScrapperItemLoader(item=ComparatorScrapperItem(), response=response)
+        loader.add_css("name", "h1.product_title::text")
+        loader.add_value("link", response.url)
+        loader.add_css("price", "p.price bdi::text")
+        loader.add_css("image_url", ".woocommerce-product-gallery img::attr(src)")
+        yield loader.load_item()

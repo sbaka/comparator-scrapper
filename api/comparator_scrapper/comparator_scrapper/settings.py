@@ -58,9 +58,10 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "comparator_scrapper.pipelines.ComparatorScrapperPipeline": 300,
-#}
+# number houwa order of the pipeline, lower values process items first
+ITEM_PIPELINES = {
+    "comparator_scrapper.pipelines.duplicatesPipeline": 400,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
