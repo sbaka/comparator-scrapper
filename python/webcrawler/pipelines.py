@@ -8,9 +8,10 @@
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 
-class ComparatorScrapperPipeline:
+class WebcrawlerPipeline:
     def process_item(self, item, spider):
         return item
+
 
 
 """

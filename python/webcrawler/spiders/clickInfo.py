@@ -1,8 +1,7 @@
 from scrapy.spiders import SitemapSpider
 
-from comparator_scrapper.items import ComparatorScrapperItem
-from comparator_scrapper.itemloaders import ComparatorScrapperItemLoader
-
+from python.webcrawler.itemloaders import WebcrawlerItemLoader
+from python.webcrawler.items import WebcrawlerItem
 
 class ClickinfoSpider(SitemapSpider):
     name = "clickInfo"
@@ -14,7 +13,7 @@ class ClickinfoSpider(SitemapSpider):
     sitemap_follow = ["product-sitemap"]
 
     def parse_product(self, response):
-        loader = ComparatorScrapperItemLoader(item=ComparatorScrapperItem(), response=response)
+        loader = WebcrawlerItemLoader(item=WebcrawlerItem(), response=response)
         loader.add_css("name", "h1.product_title::text")
         loader.add_value("link", response.url)
         loader.add_css("price", "p.price bdi::text")

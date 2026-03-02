@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export default async function Home() {
-  const role = await fetchProducts();
+  const role = await carwl();
 
   return (
     <>
@@ -10,18 +10,11 @@ export default async function Home() {
   );
 }
 
-async function fetchProducts() {
+async function carwl() {
   const baseUrl = "http://localhost:3000";
 
-  try {
-    const response = await fetch(`${baseUrl}/api/py/products?query=${"rtx 5060"}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const role = await response.json();
-    return role;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return null;
-  }
+  const response = await fetch(`${baseUrl}/crawl`, {
+    method: "GET",
+  });
+  return "running";
 }

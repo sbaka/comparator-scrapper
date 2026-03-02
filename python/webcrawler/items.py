@@ -6,7 +6,7 @@
 import scrapy
 
 
-class ComparatorScrapperItem(scrapy.Item):
+class WebcrawlerItem(scrapy.Item):
     name = scrapy.Field()
     link = scrapy.Field()
     price = scrapy.Field()

@@ -1,4 +1,4 @@
-# Scrapy settings for comparator_scrapper project
+# Scrapy settings for webcrawler project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,16 +7,16 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "comparator_scrapper"
+BOT_NAME = "webcrawler"
 
-SPIDER_MODULES = ["comparator_scrapper.spiders"]
-NEWSPIDER_MODULE = "comparator_scrapper.spiders"
+SPIDER_MODULES = ["python.webcrawler.spiders"]
+NEWSPIDER_MODULE = "python.webcrawler.spiders"
 
 ADDONS = {}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "comparator_scrapper (+http://www.yourdomain.com)"
+#USER_AGENT = "webcrawler (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -41,13 +41,13 @@ DOWNLOAD_DELAY = 1
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "comparator_scrapper.middlewares.ComparatorScrapperSpiderMiddleware": 543,
+#    "webcrawler.middlewares.WebcrawlerSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "comparator_scrapper.middlewares.ComparatorScrapperDownloaderMiddleware": 543,
+#    "webcrawler.middlewares.WebcrawlerDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -58,9 +58,8 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# number houwa order of the pipeline, lower values process items first
 ITEM_PIPELINES = {
-    "comparator_scrapper.pipelines.duplicatesPipeline": 400,
+    "python.webcrawler.pipelines.duplicatesPipeline": 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
