@@ -1,5 +1,0 @@
-from .hardware import SCRAPERS as HARDWARE_SCRAPERS
-
-SCRAPERS = [
-    *HARDWARE_SCRAPERS,
-]
