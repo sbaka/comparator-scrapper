@@ -38,3 +38,18 @@ class duplicatesPipeline:
         else:
             self.seen_links.add(link)
             return item
+        
+
+class SavingToSupabasePipeline(object):
+    def __init__(self):
+        self.create_connection()
+
+    def process_item(self, item):
+        self.save_to_supabase(item)
+        return item
+    def create_connection(self):
+        # Here you would add code to create a connection to Supabase
+        pass
+    def save_to_supabase(self, item):
+        # Here you would add code to save the item to Supabase
+        pass
