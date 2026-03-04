@@ -60,6 +60,8 @@ DOWNLOAD_DELAY = 1
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "python.webcrawler.pipelines.duplicatesPipeline": 400,
+    "python.webcrawler.pipelines.SavingToSupabasePipeline": 500,
+   
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

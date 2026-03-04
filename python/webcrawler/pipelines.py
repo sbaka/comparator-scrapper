@@ -5,8 +5,16 @@
 
 
 # useful for handling different item types with a single interface
+import os
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+
 
 class WebcrawlerPipeline:
     def process_item(self, item):
@@ -49,7 +57,17 @@ class SavingToSupabasePipeline(object):
         return item
     def create_connection(self):
         # Here you would add code to create a connection to Supabase
-        pass
+        self.connection = create_client(os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_PUBLISHABLE_KEY"))
+        
+        
     def save_to_supabase(self, item):
         # Here you would add code to save the item to Supabase
-        pass
+        link_product = item['link']
+        name_product = item['name']
+        price_product = item['price']
+        img_product= item['image_url']
+        product_data= { 'name_product': name_product,'img_product': img_product, 'price_product': price_product, 'link_product':link_product,}
+        print(product_data)
+        response = self.connection.table('product').insert(product_data).execute()
+        print('dkhlna l pipeline', response)
+        
