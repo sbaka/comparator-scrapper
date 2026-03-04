@@ -7,16 +7,12 @@ from python.webcrawler.items import WebcrawlerItem
 class ClickinfoSpider(SitemapSpider):
     name = "clickInfo"
     allowed_domains = ["click-dz.com"]
-    # sitemap_urls = ["https://click-dz.com/robots.txt"]
-    # sitemap_rules = [
-    #     (".*", "parse_product"),
-    # ]
-    # sitemap_follow = ["product-sitemap"]
-    start_urls = ["https://click-dz.com/ryzen-3-4100-4-coeurs-8-threads-3-8-ghz-8mo-cache-65w-vega-6-box/"]
-
-    async def start(self):
-        for url in self.start_urls:
-            yield Request(url, callback=self.parse_product)
+    sitemap_urls = ["https://click-dz.com/robots.txt"]
+    sitemap_rules = [
+         (".*", "parse_product"),
+     ]
+    sitemap_follow = ["product-sitemap"]
+    #start_urls = ["https://click-dz.com/ryzen-3-4100-4-coeurs-8-threads-3-8-ghz-8mo-cache-65w-vega-6-box/"]
 
 
     def parse_product(self, response):

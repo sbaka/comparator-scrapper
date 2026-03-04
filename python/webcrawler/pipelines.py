@@ -21,18 +21,23 @@ class WebcrawlerPipeline:
         return item
 
 
-
-"""
-class PriceConverterPipeline:
+class ValidationPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        price = adapter.get('price')
-        if price:
-            adapter['price'] = float(price)
-            return item
-        else:
-            raise DropItem(f"Missing price in {item}")
-"""
+        required_fields = ['name', 'price', 'link', 'image_url']
+        for field in required_fields:
+            if not adapter.get(field):
+                raise DropItem(f"Missing '{field}' in {item}")
+        return item
+
+class ValidationPipeline:
+    def process_item(self, item, spider):
+        adapter = ItemAdapter(item)
+        required_fields = ['name', 'price', 'link', 'image_url']
+        for field in required_fields:
+            if not adapter.get(field):
+                raise DropItem(f"Missing '{field}' in {item}")
+        return item
 
 class duplicatesPipeline:
     def __init__(self):
@@ -58,8 +63,6 @@ class SavingToSupabasePipeline(object):
     def create_connection(self):
         # Here you would add code to create a connection to Supabase
         self.connection = create_client(os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_PUBLISHABLE_KEY"))
-        
-        
     def save_to_supabase(self, item):
         # Here you would add code to save the item to Supabase
         link_product = item['link']
