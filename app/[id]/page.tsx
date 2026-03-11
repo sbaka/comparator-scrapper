@@ -1,16 +1,18 @@
 "use server";
 import ViewersCount from '@/components/viewersCount';
-import { createClient } from '@/utils/supabase/client';
+import CommentInput from '@/components/commentInput';
 import { getProduct } from "@/utils/supabase/queries";
 
+
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+
   const id = (await params).id;
   console.log("Product ID:", id);
   const 
     [product]  =await Promise.all([
     getProduct(id),
   ]);
- 
+
   return (
     <div>
       <h1>Product: {id}</h1>
@@ -20,6 +22,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
       <img src={product.img_product} alt={product.name_product} />
       
       <ViewersCount name={id} />
+      <CommentInput id={id} />
     </div>
   );
 }

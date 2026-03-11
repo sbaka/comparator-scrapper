@@ -22,3 +22,26 @@ export const getProduct = async (link_product: any) => {
   }
   return result;
 };
+
+export const handleComment = async (
+  id: any,
+  text: string,
+  localTime: string
+) => {
+  console.log(text);
+  // Supabase call
+
+  const supabase = await createClient();
+
+
+    const commentData = {
+      id_product: id,
+      content_comment: text,
+      name_comment: text
+    };
+
+    const { data, error } = await supabase.from("comment").insert([commentData]);
+  
+
+  // console.log("chatData:", chatData, "data", data, "error", error);
+};
