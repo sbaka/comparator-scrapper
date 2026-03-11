@@ -70,7 +70,9 @@ class SavingToSupabasePipeline(object):
         price_product = item['price']
         img_product= item['image_url']
         product_data= { 'name_product': name_product,'img_product': img_product, 'price_product': price_product, 'link_product':link_product,}
+        source_data= { 'link_source': link_product,'name_source': item['name_source'],}
         print(product_data)
         response = self.connection.table('product').insert(product_data).execute()
+        response = self.connection.table('source').insert(source_data).execute()
         print('dkhlna l pipeline', response)
         

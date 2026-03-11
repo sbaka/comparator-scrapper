@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-const viewersCount = ( { name }: { name: string }) => {
+const viewersCount = ( { id }: { id: string }) => {
 const [viewerCount, setViewerCount] = useState(0);
 
 useEffect(() => {
@@ -11,7 +11,7 @@ localStorage.getItem("viewer_id") || crypto.randomUUID()
 
 localStorage.setItem("viewer_id", sessionId)
 console.log("Session ID:", sessionId)
-const channel = supabase.channel(`product:${name}`, {
+const channel = supabase.channel(`product:${id}`, {
   config: {
     presence: {
       key: sessionId

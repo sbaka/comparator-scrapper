@@ -21,7 +21,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
       <h3>Link: {product.link_product}</h3>
       <img src={product.img_product} alt={product.name_product} />
       
-      <ViewersCount name={id} />
+      <ViewersCount id={id} />
       <CommentInput id={id} />
     </div>
   );
