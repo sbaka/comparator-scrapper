@@ -54,7 +54,7 @@ class duplicatesPipeline:
         
 class SavingToSupabasePipeline(object):
     def __init__(self):
-        self.connection = create_client(os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_PUBLISHABLE_KEY"))
+        self.connection = create_client(os.environ.get("NEXT_PUBLIC_SUPABASE_URL"), os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY"))
         self.source_cache = {}
     def process_item(self, item):
         self.save_to_supabase(item)
@@ -65,8 +65,9 @@ class SavingToSupabasePipeline(object):
         name_product = item['name']
         price_product = item['price']
         img_product = item['image_url']
+        category_product = item['category']
 
-        product_data = {'id_source': item['id_source'],'name_product': name_product, 'img_product': img_product, 'price_product': price_product, 'link_product': link_product}
+        product_data = {'id_source': item['id_source'],'id_category': 2,'name_product': name_product, 'img_product': img_product, 'price_product': price_product, 'link_product': link_product}
         print(f"Product Data: {product_data}")
         # 2. Upsert product with source_id
         self.connection.table('product').insert(product_data).execute()

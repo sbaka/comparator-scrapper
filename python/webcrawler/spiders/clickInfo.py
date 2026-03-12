@@ -24,7 +24,7 @@ class ClickinfoSpider(SitemapSpider):
         loader.add_value("link", response.url)
         loader.add_css("price", "p.price bdi::text")
         loader.add_css("image_url", ".woocommerce-product-gallery img::attr(src)")
-        loader.add_value("name_source", self.source_name)
+        loader.add_css("category", "nav.wd-breadcrumbs a:nth-of-type(3)::text")
         loader.add_value("base_url", self.base_url)
         loader.add_value("id_source", self.id_source)
         yield loader.load_item()

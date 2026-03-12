@@ -8,9 +8,9 @@ import scrapy
 
 class WebcrawlerItem(scrapy.Item):
     base_url = scrapy.Field()
-    name_source = scrapy.Field()
     name = scrapy.Field()
     link = scrapy.Field()
     price = scrapy.Field()
     image_url = scrapy.Field()
+    category = scrapy.Field()
     id_source = scrapy.Field()
