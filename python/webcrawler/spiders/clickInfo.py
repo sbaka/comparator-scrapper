@@ -6,6 +6,8 @@ from python.webcrawler.items import WebcrawlerItem
 
 class ClickinfoSpider(SitemapSpider):
     name = "clickInfo"
+    source_name = "click informatique"
+    base_url = "https://click-dz.com/"
     allowed_domains = ["click-dz.com"]
     sitemap_urls = ["https://click-dz.com/robots.txt"]
     sitemap_rules = [
@@ -21,4 +23,6 @@ class ClickinfoSpider(SitemapSpider):
         loader.add_value("link", response.url)
         loader.add_css("price", "p.price bdi::text")
         loader.add_css("image_url", ".woocommerce-product-gallery img::attr(src)")
+        loader.add_value("name_source", self.source_name)
+        loader.add_value("base_url", self.base_url)
         yield loader.load_item()

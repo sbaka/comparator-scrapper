@@ -15,3 +15,5 @@ class WebcrawlerItemLoader(ItemLoader):
     price_in = MapCompose(clean_price)
     
     image_url_in = MapCompose(str.strip)
+    
+    name_source_in = MapCompose(str.strip)
