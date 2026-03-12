@@ -66,19 +66,7 @@ class SavingToSupabasePipeline(object):
         price_product = item['price']
         img_product = item['image_url']
 
-        source_data= { 'link_source': item['base_url'],'name_source': item['name_source']}
-
-        # 1. Upsert source and get its ID and cache it so we don't have to query the database again for the same source
-        source_response = self.connection.table('source').upsert(
-            source_data, on_conflict="name_source"
-        ).execute()
-        if item['name_source'] not in self.source_cache:
-            source_response = self.connection.table('source').upsert(
-                source_data, on_conflict="name_source"
-            ).execute()
-            self.source_cache[item['name_source']] = source_response.data[0]['id_source']
-
-        product_data = {'id_source': self.source_cache[item['name_source']],'name_product': name_product, 'img_product': img_product, 'price_product': price_product, 'link_product': link_product}
+        product_data = {'id_source': item['id_source'],'name_product': name_product, 'img_product': img_product, 'price_product': price_product, 'link_product': link_product}
         print(f"Product Data: {product_data}")
         # 2. Upsert product with source_id
         self.connection.table('product').insert(product_data).execute()

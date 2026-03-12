@@ -13,3 +13,4 @@ class WebcrawlerItem(scrapy.Item):
     link = scrapy.Field()
     price = scrapy.Field()
     image_url = scrapy.Field()
+    id_source = scrapy.Field()

@@ -17,3 +17,5 @@ class WebcrawlerItemLoader(ItemLoader):
     image_url_in = MapCompose(str.strip)
     
     name_source_in = MapCompose(str.strip)
+
+    id_source_in = MapCompose()
