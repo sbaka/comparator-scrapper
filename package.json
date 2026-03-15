@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "scrapyd": "pip3 install -r requirements.txt && scrapyd",
+    "scrapyd": "cd python && pip3 install -r requirements.txt && scrapyd",
     "deploy-spiders": "cd python && scrapyd-deploy",
     "dev": "next dev",
     "build": "next build",
