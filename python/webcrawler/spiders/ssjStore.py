@@ -1,8 +1,8 @@
 from scrapy.spiders import SitemapSpider
 from scrapy import Request
 
-from python.webcrawler.itemloaders import WebcrawlerItemLoader
-from python.webcrawler.items import WebcrawlerItem
+from webcrawler.itemloaders import WebcrawlerItemLoader
+from webcrawler.items import WebcrawlerItem
 
 class ssjStoreSpider(SitemapSpider):
     name = "ssjStore"
