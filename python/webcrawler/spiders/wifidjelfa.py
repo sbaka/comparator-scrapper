@@ -1,8 +1,8 @@
 from scrapy.spiders import SitemapSpider
 from scrapy import Request
 
-from webcrawler.itemloaders import WebcrawlerItemLoader
-from webcrawler.items import WebcrawlerItem
+from webcrawler.itemloaders import wifiDjelfaItemLoader
+from webcrawler.items import webCrawlerItem
 
 class wifiDjelfaSpider(SitemapSpider):
     name = "wifiDjelfa"
@@ -19,7 +19,7 @@ class wifiDjelfaSpider(SitemapSpider):
 
 
     def parse_product(self, response):
-        loader = WebcrawlerItemLoader(item=WebcrawlerItem(), response=response)
+        loader = wifiDjelfaItemLoader(item=webCrawlerItem(), response=response)
         loader.add_css("name", "h1.product_title::text")
         loader.add_value("link", response.url)
         loader.add_css("price", "p.price bdi::text")

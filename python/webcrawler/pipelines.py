@@ -7,9 +7,8 @@
 # useful for handling different item types with a single interface
 import os
 from itemadapter import ItemAdapter
-import psycopg2
 from scrapy.exceptions import DropItem
-from supabase import create_client, Client
+from supabase import create_client
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -55,12 +54,7 @@ class duplicatesPipeline:
         
 class SavingToSupabasePipeline(object):
     def __init__(self):
-        url: str = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-        key: str = os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
-        
-        print("Initializing Supabase connection...", url, key)
-        self.connection = create_client(url, key)
-        
+        self.connection = create_client(os.environ.get("NEXT_PUBLIC_SUPABASE_URL"), os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY"))
         self.source_cache = {}
     def process_item(self, item):
         self.save_to_supabase(item)

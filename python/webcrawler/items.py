@@ -6,7 +6,7 @@
 import scrapy
 
 
-class WebcrawlerItem(scrapy.Item):
+class webCrawlerItem(scrapy.Item):
     base_url = scrapy.Field()
     name = scrapy.Field()
     link = scrapy.Field()
