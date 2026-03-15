@@ -4,7 +4,7 @@ from scrapy import Request
 from python.webcrawler.itemloaders import WebcrawlerItemLoader
 from python.webcrawler.items import WebcrawlerItem
 
-class ClickinfoSpider(SitemapSpider):
+class clickInfoSpider(SitemapSpider):
     name = "clickInfo"
     source_name = "click informatique"
     base_url = "https://click-dz.com/"
