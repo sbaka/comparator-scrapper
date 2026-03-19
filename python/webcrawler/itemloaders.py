@@ -2,13 +2,9 @@ from scrapy.loader import ItemLoader
 from itemloaders.processors import MapCompose, TakeFirst
 
 
-def clean_price_click(value):
-    """Remove spaces and convert price to float: '21 900' -> 21900.0"""
-    return float(value.replace(' ', '').strip())
-
-def clean_price_ssj(value):
-    """Remove DA, replace comma, strip spaces: '11,990 DA' -> 11990.0"""
-    return float(value.replace('DA', '').replace(',', '').strip())
+def clean_price(value):
+    """Convert price string to float: '21 900' / '118,900.00' / '11,990 DA' -> float"""
+    return float(value.replace('DA', '').replace(' ', '').replace(',', '').strip())
 
 def add_https_ssj(url):
     if url and url.startswith("//"):
@@ -20,7 +16,7 @@ class clickInfoItemLoader(ItemLoader):
 
     name_in = MapCompose(str.strip)
     
-    price_in = MapCompose(clean_price_click)
+    price_in = MapCompose(clean_price)
     
     image_url_in = MapCompose(str.strip)
 
@@ -34,7 +30,7 @@ class ssjStoreItemLoader(ItemLoader):
 
     name_in = MapCompose(str.strip)
     
-    price_in = MapCompose(clean_price_ssj)
+    price_in = MapCompose(clean_price)
     
     image_url_in = MapCompose(add_https_ssj)
 
@@ -47,7 +43,20 @@ class wifiDjelfaItemLoader(ItemLoader):
 
     name_in = MapCompose(str.strip)
     
-    price_in = MapCompose(str.strip)
+    price_in = MapCompose(clean_price)
+    
+    image_url_in = MapCompose(str.strip)
+
+    category_in = MapCompose(str.strip)
+
+    id_source_in = MapCompose()
+
+class maxFrameItemLoader(ItemLoader):
+    default_output_processor = TakeFirst()
+
+    name_in = MapCompose(str.strip)
+    
+    price_in = MapCompose(clean_price)
     
     image_url_in = MapCompose(str.strip)
 

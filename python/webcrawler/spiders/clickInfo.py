@@ -17,6 +17,9 @@ class clickInfoSpider(SitemapSpider):
 
 
     def parse_product(self, response):
+        # Skip if out of stock
+        if response.css(".stock.out-of-stock"):
+            return
         loader = clickInfoItemLoader(item=webCrawlerItem(), response=response)
         loader.add_css("name", "h1.product_title::text")
         loader.add_value("link", response.url)

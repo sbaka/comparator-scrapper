@@ -1,8 +1,4 @@
-from unittest import loader
-
 from scrapy.spiders import SitemapSpider
-from scrapy import Request
-
 from webcrawler.itemloaders import ssjStoreItemLoader
 from webcrawler.items import webCrawlerItem
 
