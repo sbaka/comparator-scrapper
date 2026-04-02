@@ -20,6 +20,7 @@ export interface Product {
 export interface ProductCardProps {
   product: Product;
   isBestDeal?: boolean;
+  isLowestPrice?: boolean;
 }
 
 export interface BestDealCardProps {

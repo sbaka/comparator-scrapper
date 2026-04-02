@@ -82,6 +82,14 @@ export function PriceComparison({
     () => getOtherOffers(filteredProducts, bestDeal),
     [filteredProducts, bestDeal],
   );
+  
+  // Find lowest price among other offers
+  const lowestPriceOffer = useMemo(() => {
+    if (otherOffers.length === 0) return null;
+    return otherOffers.reduce((min, product) => 
+      Number(product.price_product) < Number(min.price_product) ? product : min
+    );
+  }, [otherOffers]);
 
   const hasResults = filteredProducts.length > 0;
 
@@ -153,7 +161,11 @@ export function PriceComparison({
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {otherOffers.map((product) => (
-                  <ProductCard key={product.id_product} product={product} />
+                  <ProductCard 
+                    key={product.id_product} 
+                    product={product}
+                    isLowestPrice={lowestPriceOffer?.id_product === product.id_product}
+                  />
                 ))}
               </div>
             </section>
