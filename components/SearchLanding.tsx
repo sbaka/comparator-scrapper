@@ -66,7 +66,7 @@ export function SearchLanding() {
       .map((suggestion) => ({
         id: suggestion.id,
         label: suggestion.name,
-        subtitle: `${searchT("price")}: ${suggestion.lowestPrice} DZD`,
+        subtitle: `${searchT("price")}: ${suggestion.lowestPrice} ${searchT("currency")}`,
       }));
   }, [searchQuery, allProducts, searchT]);
 

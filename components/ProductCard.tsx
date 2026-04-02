@@ -13,16 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { ViewersBadge } from "./ViewersBadge";
 import { getSellerColor } from "@/lib/seller-colors";
-import { TrendingDown, Share2, ExternalLink } from "lucide-react";
+import { Share2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 
-export function ProductCard({
-  product,
-  isBestDeal = false,
-  isLowestPrice = false,
-}: ProductCardProps) {
+export function ProductCard({ product, isBestDeal = false }: ProductCardProps) {
   const t = useTranslations("productCard");
   const bestDealT = useTranslations("bestDeal");
+  const searchT = useTranslations("search");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const sourceRelation = Array.isArray(product.source)
@@ -39,29 +36,14 @@ export function ProductCard({
       className={`group relative overflow-hidden rounded-lg transition-all duration-300 subtle-scale border ${
         isBestDeal
           ? "bg-card ring-2 ring-primary shadow-lg border-primary"
-          : isLowestPrice
-            ? `bg-card border-2 ${sellerColor.border} shadow-md hover:shadow-lg`
-            : "bg-card border-border hover:shadow-md hover:border-primary/50"
+          : "bg-card border-border hover:shadow-md hover:border-primary/50"
       }`}
     >
-      {/* Top Badge Area - Best Deal or Lowest Price */}
+      {/* Top Badge Area */}
       {isBestDeal && (
         <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-2 bg-linear-to-r from-primary to-transparent">
           <span className="text-xs font-semibold text-white uppercase tracking-wider">
             {bestDealT("badge")}
-          </span>
-        </div>
-      )}
-
-      {isLowestPrice && !isBestDeal && (
-        <div
-          className={`absolute top-0 left-0 right-0 z-10 flex items-center gap-2 px-4 py-2 ${sellerColor.light} border-b ${sellerColor.border}`}
-        >
-          <TrendingDown size={16} className={sellerColor.text} />
-          <span
-            className={`text-xs font-bold uppercase tracking-wider ${sellerColor.text}`}
-          >
-            Lowest Price
           </span>
         </div>
       )}
@@ -113,14 +95,10 @@ export function ProductCard({
         >
           <span
             className={`font-grotesk font-bold ${
-              isLowestPrice && !isBestDeal
-                ? `${sellerColor.text} text-2xl`
-                : isBestDeal
-                  ? "text-primary text-2xl"
-                  : "text-foreground text-xl"
+              isBestDeal ? "text-primary text-2xl" : "text-foreground text-xl"
             }`}
           >
-            {Number(product.price_product)} DZD
+            {Number(product.price_product)} {searchT("currency")}
           </span>
         </div>
 
@@ -207,7 +185,7 @@ export function ProductCard({
                   </p>
                   <p className="text-2xl font-bold text-primary">
                     {Number(product.price_product)}{" "}
-                    <span className="text-sm">DZD</span>
+                    <span className="text-sm">{searchT("currency")}</span>
                   </p>
                 </div>
 
@@ -247,7 +225,7 @@ export function ProductCard({
                     navigator
                       .share?.({
                         title: product.name_product,
-                        text: `Check out this deal: ${product.name_product} for ${Number(product.price_product)} DZD`,
+                        text: `Check out this deal: ${product.name_product} for ${Number(product.price_product)} ${searchT("currency")}`,
                         url: product.link_product,
                       })
                       .catch(() => {

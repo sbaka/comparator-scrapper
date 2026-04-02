@@ -64,7 +64,7 @@ export function PriceComparison({
       .map((suggestion) => ({
         id: suggestion.id,
         label: suggestion.name,
-        subtitle: `${searchT("price")}: ${suggestion.lowestPrice} DZD`,
+        subtitle: `${searchT("price")}: ${suggestion.lowestPrice} ${searchT("currency")}`,
       }));
   }, [matchedProducts, lowerQuery, searchT]);
 
@@ -82,14 +82,6 @@ export function PriceComparison({
     () => getOtherOffers(filteredProducts, bestDeal),
     [filteredProducts, bestDeal],
   );
-  
-  // Find lowest price among other offers
-  const lowestPriceOffer = useMemo(() => {
-    if (otherOffers.length === 0) return null;
-    return otherOffers.reduce((min, product) => 
-      Number(product.price_product) < Number(min.price_product) ? product : min
-    );
-  }, [otherOffers]);
 
   const hasResults = filteredProducts.length > 0;
 
@@ -134,14 +126,6 @@ export function PriceComparison({
           {/* Best Deal Section */}
           {bestDeal && (
             <section className="slide-up">
-              <div className="mb-6">
-                <h2 className="text-xs font-bold text-primary uppercase tracking-widest">
-                  {t("featured")}
-                </h2>
-                <p className="text-lg font-semibold text-foreground mt-1">
-                  {t("lowestPrice")}
-                </p>
-              </div>
               <BestDealCard product={bestDeal} />
             </section>
           )}
@@ -161,11 +145,7 @@ export function PriceComparison({
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {otherOffers.map((product) => (
-                  <ProductCard 
-                    key={product.id_product} 
-                    product={product}
-                    isLowestPrice={lowestPriceOffer?.id_product === product.id_product}
-                  />
+                  <ProductCard key={product.id_product} product={product} />
                 ))}
               </div>
             </section>

@@ -10,8 +10,13 @@
   "search": {
     "placeholder": "ابحث عن بطاقات الرسومات والمعالجات والذاكرة والتخزين...",
     "ariaLabel": "ابحث عن مكونات الحاسوب",
+    "submitAriaLabel": "تنفيذ البحث",
+    "hintBeforeEnter": "اضغط",
+    "enterKey": "Enter",
+    "hintAfterEnter": "أو انقر على السهم للبحث",
     "suggestionTemplate": "{category} • ابتداءً من ${price}",
-    "price": "السعر"
+    "price": "السعر",
+    "currency": "دج"
   },
   "category": {
     "GPU": "بطاقات الرسومات",
@@ -42,7 +47,6 @@
     "emptyStateTitle": "لم يتم العثور على منتجات.",
     "tryDifferentSearch": "جرّب البحث عن بطاقات الرسومات أو المعالجات أو الذاكرة أو التخزين أو مزودات الطاقة أو أنظمة التبريد.",
     "startSearching": "ابدأ البحث عن مكونات الحاسوب لمقارنة الأسعار بين المتاجر.",
-    "featured": "مميز",
     "lowestPrice": "أقل سعر",
     "allOffers": "كل العروض",
     "offers": "{count, plural, zero {عروض} one {عرض} two {عرضان} few {عروض} many {عرضًا} other {عرض}}"

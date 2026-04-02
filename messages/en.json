@@ -10,8 +10,13 @@
   "search": {
     "placeholder": "Search GPUs, CPUs, RAM, storage...",
     "ariaLabel": "Search for PC hardware",
+    "submitAriaLabel": "Submit search",
+    "hintBeforeEnter": "Press",
+    "enterKey": "Enter",
+    "hintAfterEnter": "or click arrow to search",
     "suggestionTemplate": "{category} • From ${price}",
-    "price": "Price"
+    "price": "Price",
+    "currency": "DZD"
   },
   "category": {
     "GPU": "GPU",
@@ -42,7 +47,6 @@
     "emptyStateTitle": "No products found.",
     "tryDifferentSearch": "Try searching for GPUs, CPUs, RAM, storage, PSUs, or cooling solutions.",
     "startSearching": "Start searching for PC components to compare prices across retailers.",
-    "featured": "Featured",
     "lowestPrice": "Lowest Price",
     "allOffers": "All Offers",
     "offers": "{count, plural, one {Offer} other {Offers}}"

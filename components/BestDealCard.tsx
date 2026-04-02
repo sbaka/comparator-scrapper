@@ -3,7 +3,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { ExternalLink, Share2, TrendingDown } from "lucide-react";
 import type { BestDealCardProps } from "@/interfaces";
+import { ViewersBadge } from "./ViewersBadge";
+import { getSellerColor } from "@/lib/seller-colors";
 import {
   Dialog,
   DialogContent,
@@ -15,28 +18,35 @@ import {
 
 export function BestDealCard({ product }: BestDealCardProps) {
   const t = useTranslations("bestDeal");
+  const comparisonT = useTranslations("priceComparison");
   const productCardT = useTranslations("productCard");
+  const searchT = useTranslations("search");
   const sourceRelation = Array.isArray(product.source)
     ? product.source[0]
     : product.source;
   const sourceName =
     sourceRelation?.name_source ||
     (product.id_source ? `Store ${product.id_source}` : "Unknown seller");
-  const [isOpen, setIsOpen] = useState(false);
-  const [popupViewCount, setPopupViewCount] = useState(0);
-
-  const handleOpenChange = (open: boolean) => {
-    if (open && !isOpen) {
-      setPopupViewCount((count) => count + 1);
-    }
-
-    setIsOpen(open);
-  };
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const sellerColor = getSellerColor(sourceName);
 
   return (
     <div className="relative overflow-hidden rounded-lg bg-card ring-2 ring-primary shadow-xl hover:shadow-2xl transition-shadow">
       {/* Background glow effect */}
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent" />
+
+      {/* Lowest price banner */}
+      <div className="relative z-10 flex items-center justify-between gap-3 border-b border-primary/40 bg-primary/20 px-4 py-2">
+        <div className="flex items-center gap-2">
+          <TrendingDown size={16} className="text-primary" />
+          <span className="text-xs font-bold text-primary uppercase tracking-wider">
+            {comparisonT("lowestPrice")}
+          </span>
+        </div>
+        <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+          {t("badge")}
+        </span>
+      </div>
 
       {/* Content wrapper */}
       <div className="relative flex flex-col md:flex-row gap-6 p-6 md:p-8">
@@ -57,15 +67,6 @@ export function BestDealCard({ product }: BestDealCardProps) {
 
         {/* Text section */}
         <div className="flex-1 flex flex-col justify-between space-y-4">
-          {/* Badge */}
-          <div className="inline-flex w-fit">
-            <div className="px-3 py-1 bg-linear-to-r from-primary to-transparent rounded-full">
-              <span className="text-xs font-bold text-white uppercase tracking-widest">
-                ✓ {t("badge")}
-              </span>
-            </div>
-          </div>
-
           {/* Product Info */}
           <div className="space-y-2">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground text-balance">
@@ -73,10 +74,22 @@ export function BestDealCard({ product }: BestDealCardProps) {
             </h2>
 
             {/* Seller info */}
-            <div className="pt-2 border-t border-border">
+            <div className="pt-2 border-t border-border space-y-3">
               <p className="text-sm text-muted-foreground">
                 {t("availableAt", { seller: sourceName })}
               </p>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`inline-flex items-center px-3 py-1 rounded-full ${sellerColor.light} border ${sellerColor.border}`}
+                >
+                  <span className={`text-xs font-semibold ${sellerColor.text}`}>
+                    {sourceName}
+                  </span>
+                </div>
+                {!isDialogOpen && (
+                  <ViewersBadge id={product.id_product} compact={true} />
+                )}
+              </div>
             </div>
           </div>
 
@@ -87,13 +100,13 @@ export function BestDealCard({ product }: BestDealCardProps) {
             </p>
             <div className="flex items-baseline gap-3">
               <span className="font-grotesk text-4xl md:text-5xl font-bold text-primary">
-                {Number(product.price_product)} DZD
+                {Number(product.price_product)} {searchT("currency")}
               </span>
             </div>
           </div>
 
           {/* CTA */}
-          <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <button
                 type="button"
@@ -102,19 +115,15 @@ export function BestDealCard({ product }: BestDealCardProps) {
                 {t("cta")}
               </button>
             </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {productCardT("popupTitle", {
-                    product: product.name_product,
-                  })}
-                </DialogTitle>
+            <DialogContent className="max-w-2xl p-0 overflow-hidden">
+              <DialogHeader className="sr-only">
+                <DialogTitle>{product.name_product}</DialogTitle>
                 <DialogDescription>
                   {productCardT("popupDescription", { seller: sourceName })}
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="relative h-44 w-full overflow-hidden rounded-lg bg-muted">
+              <div className="relative h-64 w-full overflow-hidden bg-muted">
                 <Image
                   src={
                     product.img_product ||
@@ -123,45 +132,101 @@ export function BestDealCard({ product }: BestDealCardProps) {
                   alt={product.name_product}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 420px"
+                  sizes="(max-width: 768px) 100vw, 500px"
                 />
-              </div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
 
-              <div className="rounded-lg border border-border bg-muted/40 p-4 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {productCardT("price")}
-                  </span>
-                  <span className="font-semibold text-foreground">
-                    {Number(product.price_product)} DZD
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {productCardT("retailer")}
-                  </span>
-                  <span className="font-medium text-foreground">
-                    {sourceName}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {productCardT("popupViews")}
-                  </span>
-                  <span className="inline-flex min-w-10 justify-center rounded-full bg-primary/15 px-3 py-1 text-primary font-semibold">
-                    {popupViewCount}
+                <button
+                  onClick={() => setIsDialogOpen(false)}
+                  className="absolute top-4 right-4 z-10 p-2 bg-black/40 hover:bg-black/60 rounded-full transition-colors text-white"
+                  aria-label="Close"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M15 5L5 15M5 5L15 15"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+
+                <div className="absolute bottom-4 left-4 px-4 py-2 bg-primary rounded-full">
+                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                    {t("badge")}
                   </span>
                 </div>
               </div>
 
-              <a
-                href={product.link_product}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-              >
-                {productCardT("viewOffer")}
-              </a>
+              <div className="px-6 py-6 space-y-6">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-foreground text-balance">
+                    {product.name_product}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {productCardT("popupDescription", { seller: sourceName })}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-lg bg-muted/50 p-4 border border-border">
+                    <p className="text-xs text-muted-foreground font-semibold uppercase mb-2">
+                      {productCardT("price")}
+                    </p>
+                    <p className="text-2xl font-bold text-primary">
+                      {Number(product.price_product)}{" "}
+                      <span className="text-sm">{searchT("currency")}</span>
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg bg-muted/50 p-4 border border-border">
+                    <p className="text-xs text-muted-foreground font-semibold uppercase mb-2">
+                      {productCardT("retailer")}
+                    </p>
+                    <p
+                      className={`font-semibold text-foreground ${sellerColor.text}`}
+                    >
+                      {sourceName}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-1 rounded-lg bg-muted/50 p-4 border border-border text-center">
+                    <ViewersBadge id={product.id_product} shouldTrack={true} />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <a
+                    href={product.link_product}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-3 text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg"
+                  >
+                    <ExternalLink size={16} />
+                    {productCardT("viewOffer")}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator
+                        .share?.({
+                          title: product.name_product,
+                          text: `Check out this deal: ${product.name_product} for ${Number(product.price_product)} ${searchT("currency")}`,
+                          url: product.link_product,
+                        })
+                        .catch(() => {
+                          navigator.clipboard.writeText(product.link_product);
+                        });
+                    }}
+                    className="px-4 py-3 rounded-lg bg-muted text-foreground border border-border hover:bg-primary/10 transition-colors"
+                    aria-label="Share"
+                  >
+                    <Share2 size={16} />
+                  </button>
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
 
