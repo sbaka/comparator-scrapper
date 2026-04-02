@@ -1,0 +1,56 @@
+{
+  "header": {
+    "title": "comparateurdz",
+    "subtitle": "ابحث عن أفضل أجهزة الكمبيوتر بأفضل سعر"
+  },
+  "metadata": {
+    "title": "comparateurdz - مقارنة أسعار مكونات الحاسوب",
+    "description": "اعثر على أفضل أسعار مكونات الحاسوب لدى عدة متاجر"
+  },
+  "search": {
+    "placeholder": "ابحث عن بطاقات الرسومات والمعالجات والذاكرة والتخزين...",
+    "ariaLabel": "ابحث عن مكونات الحاسوب",
+    "suggestionTemplate": "{category} • ابتداءً من ${price}"
+  },
+  "category": {
+    "GPU": "بطاقات الرسومات",
+    "CPU": "المعالجات",
+    "RAM": "الذاكرة",
+    "Storage": "التخزين",
+    "PSU": "مزود الطاقة",
+    "Cooling": "التبريد"
+  },
+  "bestDeal": {
+    "badge": "أفضل صفقة",
+    "availableAt": "متوفر لدى {seller}",
+    "priceLabel": "أفضل سعر",
+    "cta": "احصل على هذا العرض",
+    "inStockLimited": "متوفر في المخزون - الكمية محدودة"
+  },
+  "productCard": {
+    "price": "السعر",
+    "retailer": "بائع التجزئة",
+    "inStock": "في المخزون",
+    "outOfStock": "غير متوفر",
+    "viewOffer": "عرض العرض",
+    "popupTitle": "تفاصيل {product}",
+    "popupDescription": "عرض سريع لهذا العرض من {seller}",
+    "popupViews": "عدد مرات فتح النافذة"
+  },
+  "priceComparison": {
+    "emptyStateTitle": "لم يتم العثور على منتجات.",
+    "tryDifferentSearch": "جرّب البحث عن بطاقات الرسومات أو المعالجات أو الذاكرة أو التخزين أو مزودات الطاقة أو أنظمة التبريد.",
+    "startSearching": "ابدأ البحث عن مكونات الحاسوب لمقارنة الأسعار بين المتاجر.",
+    "featured": "مميز",
+    "lowestPrice": "أقل سعر",
+    "allOffers": "كل العروض",
+    "offers": "{count, plural, zero {عروض} one {عرض} two {عرضان} few {عروض} many {عرضًا} other {عرض}}"
+  },
+  "languageSwitcher": {
+    "label": "اللغة",
+    "english": "English",
+    "french": "Français",
+    "arabic": "العربية",
+    "toggleTheme": "تبديل المظهر"
+  }
+}

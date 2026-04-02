@@ -1,0 +1,56 @@
+{
+  "header": {
+    "title": "comparateurdz",
+    "subtitle": "Find the Perfect PC Hardware at the Best Price"
+  },
+  "metadata": {
+    "title": "comparateurdz - PC hardware price comparison",
+    "description": "Find the best PC hardware prices across multiple retailers"
+  },
+  "search": {
+    "placeholder": "Search GPUs, CPUs, RAM, storage...",
+    "ariaLabel": "Search for PC hardware",
+    "suggestionTemplate": "{category} • From ${price}"
+  },
+  "category": {
+    "GPU": "GPU",
+    "CPU": "CPU",
+    "RAM": "RAM",
+    "Storage": "Storage",
+    "PSU": "PSU",
+    "Cooling": "Cooling"
+  },
+  "bestDeal": {
+    "badge": "Best Deal",
+    "availableAt": "Available at {seller}",
+    "priceLabel": "Best Price",
+    "cta": "Get This Deal",
+    "inStockLimited": "In Stock - Limited Availability"
+  },
+  "productCard": {
+    "price": "Price",
+    "retailer": "Retailer",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "viewOffer": "View Offer",
+    "popupTitle": "{product} details",
+    "popupDescription": "Quick view for this offer from {seller}",
+    "popupViews": "Popup views"
+  },
+  "priceComparison": {
+    "emptyStateTitle": "No products found.",
+    "tryDifferentSearch": "Try searching for GPUs, CPUs, RAM, storage, PSUs, or cooling solutions.",
+    "startSearching": "Start searching for PC components to compare prices across retailers.",
+    "featured": "Featured",
+    "lowestPrice": "Lowest Price",
+    "allOffers": "All Offers",
+    "offers": "{count, plural, one {Offer} other {Offers}}"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "english": "English",
+    "french": "Français",
+    "arabic": "العربية",
+    "toggleTheme": "Toggle theme"
+  }
+}

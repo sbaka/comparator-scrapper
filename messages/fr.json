@@ -1,0 +1,56 @@
+{
+  "header": {
+    "title": "comparateurdz",
+    "subtitle": "Trouvez le Matériel PC Parfait au Meilleur Prix"
+  },
+  "metadata": {
+    "title": "comparateurdz - comparaison de prix du matériel PC",
+    "description": "Trouvez les meilleurs prix du matériel PC chez plusieurs revendeurs"
+  },
+  "search": {
+    "placeholder": "Rechercher des GPU, CPU, RAM, stockage...",
+    "ariaLabel": "Rechercher du matériel PC",
+    "suggestionTemplate": "{category} • À partir de ${price}"
+  },
+  "category": {
+    "GPU": "GPU",
+    "CPU": "CPU",
+    "RAM": "RAM",
+    "Storage": "Stockage",
+    "PSU": "Alimentation",
+    "Cooling": "Refroidissement"
+  },
+  "bestDeal": {
+    "badge": "Meilleure offre",
+    "availableAt": "Disponible chez {seller}",
+    "priceLabel": "Meilleur prix",
+    "cta": "Obtenir cette offre",
+    "inStockLimited": "En stock - disponibilité limitée"
+  },
+  "productCard": {
+    "price": "Prix",
+    "retailer": "Revendeur",
+    "inStock": "En Stock",
+    "outOfStock": "Rupture de Stock",
+    "viewOffer": "Voir l'offre",
+    "popupTitle": "Détails de {product}",
+    "popupDescription": "Vue rapide de cette offre chez {seller}",
+    "popupViews": "Vues de la fenêtre"
+  },
+  "priceComparison": {
+    "emptyStateTitle": "Aucun produit trouvé.",
+    "tryDifferentSearch": "Essayez de rechercher des GPU, CPU, RAM, stockage, alimentations ou solutions de refroidissement.",
+    "startSearching": "Commencez à rechercher des composants PC pour comparer les prix entre revendeurs.",
+    "featured": "En vedette",
+    "lowestPrice": "Prix le plus bas",
+    "allOffers": "Toutes les offres",
+    "offers": "{count, plural, one {Offre} other {Offres}}"
+  },
+  "languageSwitcher": {
+    "label": "Langue",
+    "english": "English",
+    "french": "Français",
+    "arabic": "العربية",
+    "toggleTheme": "Changer le thème"
+  }
+}
