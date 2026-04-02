@@ -2,52 +2,36 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { sortByPrice, getBestDeal, getOtherOffers } from "@/lib/data";
-import { fetchProducts } from "@/utils/supabase/queries";
 import { SearchBar } from "./SearchBar";
 import { BestDealCard } from "./BestDealCard";
 import { ProductCard } from "./ProductCard";
 import { useTranslations } from "next-intl";
-import type {
-  PriceComparisonProps,
-  ProductSuggestion,
-  Product,
-} from "@/interfaces";
+import type { PriceComparisonProps, ProductSuggestion } from "@/interfaces";
 
 export function PriceComparison({
   initialQuery = "",
   onClearQuery,
+  products,
+  isLoading = false,
 }: PriceComparisonProps) {
   const t = useTranslations("priceComparison");
   const searchT = useTranslations("search");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadProducts = async () => {
-      setIsLoading(true);
-      const products = await fetchProducts();
-      setAllProducts(products);
-      setIsLoading(false);
-    };
-
-    loadProducts();
-  }, []);
 
   const lowerQuery = searchQuery.trim().toLowerCase();
 
   const matchedProducts = useMemo(() => {
     if (!lowerQuery) {
-      return allProducts;
+      return products;
     }
 
-    return allProducts.filter((product) => {
+    return products.filter((product) => {
       return (
         product.name_product.toLowerCase().includes(lowerQuery) ||
         product.link_product.toLowerCase().includes(lowerQuery)
       );
     });
-  }, [allProducts, lowerQuery]);
+  }, [products, lowerQuery]);
 
   const suggestions = useMemo(() => {
     if (!lowerQuery) {

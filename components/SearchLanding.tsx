@@ -11,13 +11,16 @@ export function SearchLanding() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeQuery, setActiveQuery] = useState("");
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const headerT = useTranslations("header");
   const searchT = useTranslations("search");
 
   useEffect(() => {
     const loadProducts = async () => {
+      setIsLoading(true);
       const products = await fetchProducts();
       setAllProducts(products);
+      setIsLoading(false);
     };
 
     loadProducts();
@@ -115,6 +118,8 @@ export function SearchLanding() {
         <PriceComparison
           initialQuery={activeQuery}
           onClearQuery={handleBackToLanding}
+          products={allProducts}
+          isLoading={isLoading}
         />
       )}
     </div>

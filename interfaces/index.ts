@@ -29,6 +29,8 @@ export interface BestDealCardProps {
 export interface PriceComparisonProps {
   initialQuery?: string;
   onClearQuery?: () => void;
+  products: Product[];
+  isLoading?: boolean;
 }
 
 export interface SearchSuggestion {
