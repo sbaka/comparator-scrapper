@@ -1,20 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-
-interface SearchSuggestion {
-  id: string;
-  label: string;
-  subtitle?: string;
-}
-
-interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit?: (value: string) => void;
-  suggestions?: SearchSuggestion[];
-  onSuggestionSelect?: (suggestion: SearchSuggestion) => void;
-}
+import type { SearchBarProps, SearchSuggestion } from "@/interfaces";
 
 export function SearchBar({
   value,

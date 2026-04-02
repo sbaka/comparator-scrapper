@@ -10,7 +10,8 @@
   "search": {
     "placeholder": "ابحث عن بطاقات الرسومات والمعالجات والذاكرة والتخزين...",
     "ariaLabel": "ابحث عن مكونات الحاسوب",
-    "suggestionTemplate": "{category} • ابتداءً من ${price}"
+    "suggestionTemplate": "{category} • ابتداءً من ${price}",
+    "price": "السعر"
   },
   "category": {
     "GPU": "بطاقات الرسومات",

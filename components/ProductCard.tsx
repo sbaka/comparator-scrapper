@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Product } from "@/lib/data";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import type { ProductCardProps } from "@/interfaces";
 import {
   Dialog,
   DialogContent,
@@ -12,25 +11,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-interface ProductCardProps {
-  product: Product;
-  isBestDeal?: boolean;
-}
+import ViewersCount from "./viewersCount";
 
 export function ProductCard({ product, isBestDeal = false }: ProductCardProps) {
   const t = useTranslations("productCard");
   const bestDealT = useTranslations("bestDeal");
-  const [isOpen, setIsOpen] = useState(false);
-  const [popupViewCount, setPopupViewCount] = useState(0);
-
-  const handleOpenChange = (open: boolean) => {
-    if (open && !isOpen) {
-      setPopupViewCount((count) => count + 1);
-    }
-
-    setIsOpen(open);
-  };
+  const sourceRelation = Array.isArray(product.source)
+    ? product.source[0]
+    : product.source;
+  const sourceName =
+    sourceRelation?.name_source ||
+    (product.id_source ? `Store ${product.id_source}` : "Unknown seller");
 
   return (
     <div
@@ -54,8 +45,11 @@ export function ProductCard({ product, isBestDeal = false }: ProductCardProps) {
         className={`relative w-full overflow-hidden bg-muted ${isBestDeal ? "h-48" : "h-32"}`}
       >
         <Image
-          src={product.image}
-          alt={product.name}
+          src={
+            product.img_product ||
+            `https://picsum.photos/seed/${product.id_product}/400/300`
+          }
+          alt={product.name_product}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes={
@@ -70,25 +64,8 @@ export function ProductCard({ product, isBestDeal = false }: ProductCardProps) {
       <div className={`relative ${isBestDeal ? "px-6 py-4" : "p-4"} space-y-2`}>
         {/* Product Name */}
         <h3 className="text-sm font-semibold text-foreground line-clamp-2">
-          {product.name}
+          {product.name_product}
         </h3>
-
-        {/* Specs */}
-        {product.specs && (
-          <p className="text-xs text-muted-foreground">{product.specs}</p>
-        )}
-
-        {/* Seller and Stock */}
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-muted-foreground">
-            {product.seller}
-          </p>
-          {!product.inStock && (
-            <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
-              {t("outOfStock")}
-            </span>
-          )}
-        </div>
 
         {/* Price Section */}
         <div
@@ -99,17 +76,12 @@ export function ProductCard({ product, isBestDeal = false }: ProductCardProps) {
               isBestDeal ? "text-2xl" : "text-xl"
             }`}
           >
-            ${product.price}
+            {Number(product.price_product)} DZD
           </span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-xs text-muted-foreground line-through">
-              ${product.originalPrice}
-            </span>
-          )}
         </div>
 
         {/* CTA Button */}
-        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+        <Dialog>
           <DialogTrigger asChild>
             <button
               type="button"
@@ -125,17 +97,22 @@ export function ProductCard({ product, isBestDeal = false }: ProductCardProps) {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {t("popupTitle", { product: product.name })}
+                {t("popupTitle", { product: product.name_product })}
               </DialogTitle>
               <DialogDescription>
-                {t("popupDescription", { seller: product.seller })}
+                {t("popupDescription", {
+                  seller: sourceName,
+                })}
               </DialogDescription>
             </DialogHeader>
 
             <div className="relative h-44 w-full overflow-hidden rounded-lg bg-muted">
               <Image
-                src={product.image}
-                alt={product.name}
+                src={
+                  product.img_product ||
+                  `https://picsum.photos/seed/${product.id_product}/400/300`
+                }
+                alt={product.name_product}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 420px"
@@ -146,25 +123,20 @@ export function ProductCard({ product, isBestDeal = false }: ProductCardProps) {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">{t("price")}</span>
                 <span className="font-semibold text-foreground">
-                  ${product.price}
+                  {Number(product.price_product)} DZD
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">{t("retailer")}</span>
                 <span className="font-medium text-foreground">
-                  {product.seller}
+                  {sourceName}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t("popupViews")}</span>
-                <span className="inline-flex min-w-10 justify-center rounded-full bg-primary/15 px-3 py-1 text-primary font-semibold">
-                  {popupViewCount}
-                </span>
-              </div>
+              <ViewersCount id={product.id_product} />
             </div>
 
             <a
-              href={product.link}
+              href={product.link_product}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"

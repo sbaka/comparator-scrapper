@@ -10,7 +10,8 @@
   "search": {
     "placeholder": "Rechercher des GPU, CPU, RAM, stockage...",
     "ariaLabel": "Rechercher du matériel PC",
-    "suggestionTemplate": "{category} • À partir de ${price}"
+    "suggestionTemplate": "{category} • À partir de ${price}",
+    "price": "Prix"
   },
   "category": {
     "GPU": "GPU",

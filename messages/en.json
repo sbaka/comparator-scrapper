@@ -10,7 +10,8 @@
   "search": {
     "placeholder": "Search GPUs, CPUs, RAM, storage...",
     "ariaLabel": "Search for PC hardware",
-    "suggestionTemplate": "{category} • From ${price}"
+    "suggestionTemplate": "{category} • From ${price}",
+    "price": "Price"
   },
   "category": {
     "GPU": "GPU",

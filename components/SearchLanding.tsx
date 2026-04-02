@@ -1,27 +1,71 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SearchBar } from "./SearchBar";
-import { getProductSuggestions } from "@/lib/data";
+import { fetchProducts } from "@/utils/supabase/queries";
+import type { ProductSuggestion, Product } from "@/interfaces";
 import { PriceComparison } from "./PriceComparison";
 
 export function SearchLanding() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeQuery, setActiveQuery] = useState("");
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const headerT = useTranslations("header");
   const searchT = useTranslations("search");
-  const categoryT = useTranslations("category");
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const products = await fetchProducts();
+      setAllProducts(products);
+    };
+
+    loadProducts();
+  }, []);
+
   const suggestions = useMemo(() => {
-    return getProductSuggestions(searchQuery).map((suggestion) => ({
-      id: suggestion.id,
-      label: suggestion.name,
-      subtitle: searchT("suggestionTemplate", {
-        category: categoryT(suggestion.category),
-        price: suggestion.lowestPrice,
-      }),
-    }));
-  }, [searchQuery, searchT, categoryT]);
+    const lowerQuery = searchQuery.trim().toLowerCase();
+
+    if (!lowerQuery) {
+      return [];
+    }
+
+    const matchedProducts = allProducts.filter((product) => {
+      return (
+        product.name_product.toLowerCase().includes(lowerQuery) ||
+        product.link_product.toLowerCase().includes(lowerQuery)
+      );
+    });
+
+    const grouped = matchedProducts.reduce(
+      (acc, product) => {
+        if (!acc[product.name_product]) {
+          acc[product.name_product] = {
+            id: product.id_product,
+            name: product.name_product,
+            lowestPrice: Number(product.price_product),
+          };
+
+          return acc;
+        }
+
+        if (product.price_product < acc[product.name_product].lowestPrice) {
+          acc[product.name_product].lowestPrice = Number(product.price_product);
+        }
+
+        return acc;
+      },
+      {} as Record<string, ProductSuggestion>,
+    );
+
+    return Object.values(grouped)
+      .sort((a, b) => a.lowestPrice - b.lowestPrice)
+      .map((suggestion) => ({
+        id: suggestion.id,
+        label: suggestion.name,
+        subtitle: `${searchT("price")}: ${suggestion.lowestPrice} DZD`,
+      }));
+  }, [searchQuery, allProducts, searchT]);
 
   const handleSubmit = (query: string) => {
     const trimmed = query.trim();

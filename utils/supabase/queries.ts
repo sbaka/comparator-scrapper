@@ -1,47 +1,62 @@
-"use server";
 import { createClient } from "./client";
+import type { Product } from "@/interfaces";
 
-
-export const getProduct = async (link_product: any) => {
+export const fetchProducts = async (): Promise<Product[]> => {
   const supabase = createClient();
-  console.log(link_product)
-    const result:Product = {created_at: "", id_product: "", name_product: "", img_product: "", price_product: 0, link_product: ""};
-  const { data } = await supabase
+
+  const { data, error } = await supabase
     .from("product")
-    .select("*")
-    .eq("id_product", link_product);
-  if(data) {
-    result.created_at = data[0].created_at;
-    result.id_product = data[0].id_product;
-    result.name_product = data[0].name_product;
-    result.img_product = data[0].img_product;
-    result.price_product = data[0].price_product;
-    result.link_product = data[0].link_product;
-  }else{
-    console.error("Error fetching product:", data);
+    .select(
+      "created_at,id_product,name_product,img_product,price_product,link_product,id_source,id_category,source(name_source)",
+    )
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching products:", error.message);
+    return [];
   }
-  return result;
+
+  return (data ?? []) as Product[];
+};
+
+export const getProduct = async (
+  id_product: string,
+): Promise<Product | null> => {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("product")
+    .select(
+      "created_at,id_product,name_product,img_product,price_product,link_product,id_source,id_category,source(name_source)",
+    )
+    .eq("id_product", id_product)
+    .maybeSingle();
+
+  if (error || !data) {
+    console.error("Error fetching product:", error?.message ?? "Not found");
+    return null;
+  }
+
+  return data as Product;
 };
 
 export const handleComment = async (
-  id: any,
+  id: string,
   text: string,
-  localTime: string
+  localTime: string,
 ) => {
-  console.log(text);
-  // Supabase call
+  const supabase = createClient();
 
-  const supabase = await createClient();
+  const commentData = {
+    id_product: id,
+    content_comment: text,
+    name_comment: text,
+    created_at: localTime,
+  };
 
+  const { error } = await supabase.from("comment").insert([commentData]);
 
-    const commentData = {
-      id_product: id,
-      content_comment: text,
-      name_comment: text
-    };
-
-    const { data, error } = await supabase.from("comment").insert([commentData]);
-  
-
-  // console.log("chatData:", chatData, "data", data, "error", error);
+  if (error) {
+    console.error("Error inserting comment:", error.message);
+  }
 };

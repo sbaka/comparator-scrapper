@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Product } from "@/lib/data";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import type { BestDealCardProps } from "@/interfaces";
 import {
   Dialog,
   DialogContent,
@@ -13,13 +13,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-interface BestDealCardProps {
-  product: Product;
-}
-
 export function BestDealCard({ product }: BestDealCardProps) {
   const t = useTranslations("bestDeal");
   const productCardT = useTranslations("productCard");
+  const sourceRelation = Array.isArray(product.source)
+    ? product.source[0]
+    : product.source;
+  const sourceName =
+    sourceRelation?.name_source ||
+    (product.id_source ? `Store ${product.id_source}` : "Unknown seller");
   const [isOpen, setIsOpen] = useState(false);
   const [popupViewCount, setPopupViewCount] = useState(0);
 
@@ -41,8 +43,11 @@ export function BestDealCard({ product }: BestDealCardProps) {
         {/* Image section */}
         <div className="relative w-full md:w-1/2 h-64 md:h-auto rounded-lg overflow-hidden bg-muted shrink-0">
           <Image
-            src={product.image}
-            alt={product.name}
+            src={
+              product.img_product ||
+              `https://picsum.photos/seed/${product.id_product}/400/300`
+            }
+            alt={product.name_product}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
@@ -64,19 +69,13 @@ export function BestDealCard({ product }: BestDealCardProps) {
           {/* Product Info */}
           <div className="space-y-2">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground text-balance">
-              {product.name}
+              {product.name_product}
             </h2>
-
-            {product.specs && (
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {product.specs}
-              </p>
-            )}
 
             {/* Seller info */}
             <div className="pt-2 border-t border-border">
               <p className="text-sm text-muted-foreground">
-                {t("availableAt", { seller: product.seller })}
+                {t("availableAt", { seller: sourceName })}
               </p>
             </div>
           </div>
@@ -88,14 +87,8 @@ export function BestDealCard({ product }: BestDealCardProps) {
             </p>
             <div className="flex items-baseline gap-3">
               <span className="font-grotesk text-4xl md:text-5xl font-bold text-primary">
-                ${product.price}
+                {Number(product.price_product)} DZD
               </span>
-              {product.originalPrice &&
-                product.originalPrice > product.price && (
-                  <span className="text-sm text-muted-foreground line-through">
-                    ${product.originalPrice}
-                  </span>
-                )}
             </div>
           </div>
 
@@ -112,17 +105,22 @@ export function BestDealCard({ product }: BestDealCardProps) {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
-                  {productCardT("popupTitle", { product: product.name })}
+                  {productCardT("popupTitle", {
+                    product: product.name_product,
+                  })}
                 </DialogTitle>
                 <DialogDescription>
-                  {productCardT("popupDescription", { seller: product.seller })}
+                  {productCardT("popupDescription", { seller: sourceName })}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="relative h-44 w-full overflow-hidden rounded-lg bg-muted">
                 <Image
-                  src={product.image}
-                  alt={product.name}
+                  src={
+                    product.img_product ||
+                    `https://picsum.photos/seed/${product.id_product}/400/300`
+                  }
+                  alt={product.name_product}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 420px"
@@ -135,7 +133,7 @@ export function BestDealCard({ product }: BestDealCardProps) {
                     {productCardT("price")}
                   </span>
                   <span className="font-semibold text-foreground">
-                    ${product.price}
+                    {Number(product.price_product)} DZD
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
@@ -143,7 +141,7 @@ export function BestDealCard({ product }: BestDealCardProps) {
                     {productCardT("retailer")}
                   </span>
                   <span className="font-medium text-foreground">
-                    {product.seller}
+                    {sourceName}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
@@ -157,7 +155,7 @@ export function BestDealCard({ product }: BestDealCardProps) {
               </div>
 
               <a
-                href={product.link}
+                href={product.link_product}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
@@ -168,11 +166,9 @@ export function BestDealCard({ product }: BestDealCardProps) {
           </Dialog>
 
           {/* Stock status */}
-          {product.inStock && (
-            <p className="text-xs text-primary font-semibold">
-              ✓ {t("inStockLimited")}
-            </p>
-          )}
+          <p className="text-xs text-primary font-semibold">
+            ✓ {t("inStockLimited")}
+          </p>
         </div>
       </div>
     </div>

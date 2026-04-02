@@ -1,22 +1,17 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import {
-  getProductsBySearch,
-  getProductSuggestions,
-  sortByPrice,
-  getBestDeal,
-  getOtherOffers,
-} from "@/lib/data";
+import { sortByPrice, getBestDeal, getOtherOffers } from "@/lib/data";
+import { fetchProducts } from "@/utils/supabase/queries";
 import { SearchBar } from "./SearchBar";
 import { BestDealCard } from "./BestDealCard";
 import { ProductCard } from "./ProductCard";
 import { useTranslations } from "next-intl";
-
-interface PriceComparisonProps {
-  initialQuery?: string;
-  onClearQuery?: () => void;
-}
+import type {
+  PriceComparisonProps,
+  ProductSuggestion,
+  Product,
+} from "@/interfaces";
 
 export function PriceComparison({
   initialQuery = "",
@@ -24,24 +19,75 @@ export function PriceComparison({
 }: PriceComparisonProps) {
   const t = useTranslations("priceComparison");
   const searchT = useTranslations("search");
-  const categoryT = useTranslations("category");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setIsLoading(true);
+      const products = await fetchProducts();
+      setAllProducts(products);
+      setIsLoading(false);
+    };
+
+    loadProducts();
+  }, []);
+
+  const lowerQuery = searchQuery.trim().toLowerCase();
+
+  const matchedProducts = useMemo(() => {
+    if (!lowerQuery) {
+      return allProducts;
+    }
+
+    return allProducts.filter((product) => {
+      return (
+        product.name_product.toLowerCase().includes(lowerQuery) ||
+        product.link_product.toLowerCase().includes(lowerQuery)
+      );
+    });
+  }, [allProducts, lowerQuery]);
+
   const suggestions = useMemo(() => {
-    return getProductSuggestions(searchQuery).map((suggestion) => ({
-      id: suggestion.id,
-      label: suggestion.name,
-      subtitle: searchT("suggestionTemplate", {
-        category: categoryT(suggestion.category),
-        price: suggestion.lowestPrice,
-      }),
-    }));
-  }, [searchQuery, searchT, categoryT]);
+    if (!lowerQuery) {
+      return [];
+    }
+
+    const grouped = matchedProducts.reduce(
+      (acc, product) => {
+        if (!acc[product.name_product]) {
+          acc[product.name_product] = {
+            id: product.id_product,
+            name: product.name_product,
+            lowestPrice: Number(product.price_product),
+          };
+
+          return acc;
+        }
+
+        if (product.price_product < acc[product.name_product].lowestPrice) {
+          acc[product.name_product].lowestPrice = Number(product.price_product);
+        }
+
+        return acc;
+      },
+      {} as Record<string, ProductSuggestion>,
+    );
+
+    return Object.values(grouped)
+      .sort((a, b) => a.lowestPrice - b.lowestPrice)
+      .map((suggestion) => ({
+        id: suggestion.id,
+        label: suggestion.name,
+        subtitle: `${searchT("price")}: ${suggestion.lowestPrice} DZD`,
+      }));
+  }, [matchedProducts, lowerQuery, searchT]);
 
   // Search and sort products
   const filteredProducts = useMemo(() => {
-    const searched = getProductsBySearch(searchQuery);
-    return sortByPrice(searched);
-  }, [searchQuery]);
+    return sortByPrice(matchedProducts);
+  }, [matchedProducts]);
 
   // Get best deal and others
   const bestDeal = useMemo(
@@ -72,7 +118,13 @@ export function PriceComparison({
         />
       </div>
 
-      {!hasResults ? (
+      {isLoading && (
+        <div className="py-10 text-center text-muted-foreground">
+          Loading products...
+        </div>
+      )}
+
+      {!isLoading && !hasResults ? (
         // Empty state
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="text-5xl mb-4">🔍</div>
@@ -85,7 +137,7 @@ export function PriceComparison({
               : t("startSearching")}
           </p>
         </div>
-      ) : (
+      ) : !isLoading ? (
         <div className="space-y-10">
           {/* Best Deal Section */}
           {bestDeal && (
@@ -117,13 +169,13 @@ export function PriceComparison({
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {otherOffers.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id_product} product={product} />
                 ))}
               </div>
             </section>
           )}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
