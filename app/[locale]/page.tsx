@@ -1,7 +1,16 @@
 import { SearchLanding } from "@/components/SearchLanding";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { searchProductsServer } from "@/utils/supabase/server-queries";
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q = "" } = await searchParams;
+  const query = q.trim();
+  const products = query ? await searchProductsServer(query) : [];
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Animated Background Elements */}
@@ -24,7 +33,7 @@ export default function Home() {
 
       {/* Main Content */}
       <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-        <SearchLanding />
+        <SearchLanding initialQuery={query} products={products} />
       </section>
     </main>
   );

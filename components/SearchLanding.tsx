@@ -1,76 +1,27 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { SearchBar } from "./SearchBar";
-import { fetchProducts } from "@/utils/supabase/queries";
-import type { ProductSuggestion, Product } from "@/interfaces";
+import type { Product } from "@/interfaces";
 import { PriceComparison } from "./PriceComparison";
 
-export function SearchLanding() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeQuery, setActiveQuery] = useState("");
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+interface SearchLandingProps {
+  initialQuery?: string;
+  products?: Product[];
+}
+
+export function SearchLanding({
+  initialQuery = "",
+  products = [],
+}: SearchLandingProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const headerT = useTranslations("header");
-  const searchT = useTranslations("search");
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      setIsLoading(true);
-      const products = await fetchProducts();
-      setAllProducts(products);
-      setIsLoading(false);
-    };
-
-    loadProducts();
-  }, []);
-
-  const suggestions = useMemo(() => {
-    const lowerQuery = searchQuery.trim().toLowerCase();
-
-    if (!lowerQuery) {
-      return [];
-    }
-
-    const matchedProducts = allProducts.filter((product) => {
-      return (
-        product.name_product.toLowerCase().includes(lowerQuery) ||
-        product.link_product.toLowerCase().includes(lowerQuery)
-      );
-    });
-
-    const grouped = matchedProducts.reduce(
-      (acc, product) => {
-        if (!acc[product.name_product]) {
-          acc[product.name_product] = {
-            id: product.id_product,
-            name: product.name_product,
-            lowestPrice: Number(product.price_product),
-          };
-
-          return acc;
-        }
-
-        if (product.price_product < acc[product.name_product].lowestPrice) {
-          acc[product.name_product].lowestPrice = Number(product.price_product);
-        }
-
-        return acc;
-      },
-      {} as Record<string, ProductSuggestion>,
-    );
-
-    return Object.values(grouped)
-      .sort((a, b) => a.lowestPrice - b.lowestPrice)
-      .map((suggestion) => ({
-        id: suggestion.id,
-        label: suggestion.name,
-        subtitle: `${searchT("price")}: ${suggestion.lowestPrice} ${searchT("currency")}`,
-      }));
-  }, [searchQuery, allProducts, searchT]);
-
-  const handleSubmit = (query: string) => {
+  const runSearch = (query: string) => {
     const trimmed = query.trim();
 
     if (!trimmed) {
@@ -78,15 +29,21 @@ export function SearchLanding() {
     }
 
     setSearchQuery(trimmed);
-    setActiveQuery(trimmed);
+    const params = new URLSearchParams();
+    params.set("q", trimmed);
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleSubmit = (query: string) => {
+    runSearch(query);
   };
 
   const handleBackToLanding = () => {
-    setActiveQuery("");
     setSearchQuery("");
+    router.push(pathname);
   };
 
-  const isShowingResults = activeQuery.length > 0;
+  const isShowingResults = initialQuery.length > 0;
 
   return (
     <div
@@ -110,16 +67,14 @@ export function SearchLanding() {
             value={searchQuery}
             onChange={setSearchQuery}
             onSubmit={handleSubmit}
-            suggestions={suggestions}
-            onSuggestionSelect={(suggestion) => handleSubmit(suggestion.label)}
           />
         </>
       ) : (
         <PriceComparison
-          initialQuery={activeQuery}
+          initialQuery={initialQuery}
           onClearQuery={handleBackToLanding}
-          products={allProducts}
-          isLoading={isLoading}
+          onSearch={runSearch}
+          products={products}
         />
       )}
     </div>
