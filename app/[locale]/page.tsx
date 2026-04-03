@@ -1,4 +1,5 @@
 import { SearchLanding } from "@/components/SearchLanding";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { searchProductsServer } from "@/utils/supabase/server-queries";
 
 export default async function Home({
@@ -20,6 +21,16 @@ export default async function Home({
           style={{ animationDelay: "1s" }}
         ></div>
       </div>
+
+      {/* Header */}
+      <header className="z-10 border-b border-border sticky top-0 bg-background/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+          <div className="flex justify-end items-center fade-in">
+            <LanguageSwitcher />
+          </div>
+        </div>
+      </header>
+
       {/* Main Content */}
       <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-10 md:py-16">
         <SearchLanding initialQuery={query} products={products} />
