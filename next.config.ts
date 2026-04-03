@@ -14,17 +14,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  rewrites: async () => {
-    return [
-      {
-        source: "/api/py/:path*",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:6800/:path*"
-            : `${process.env.SCRAPYD_BASE_URL ?? "http://127.0.0.1:6800"}/:path*`,
-      },
-    ];
-  },
+
 };
 
 const withNextIntl = createNextIntlPlugin();
