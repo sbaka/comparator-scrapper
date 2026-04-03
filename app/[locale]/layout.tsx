@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+
 import {
   getMessages,
   getTranslations,
@@ -82,6 +84,14 @@ export default async function LocaleLayout({
       dir={isRTL ? "rtl" : "ltr"}
       className={`${_inter.variable} ${_spaceGrotesk.variable}`}
     >
+      {/* Header */}
+      <header className="z-50 border-b border-border sticky top-0 bg-background/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+          <div className="flex justify-end items-center fade-in">
+            <LanguageSwitcher />
+          </div>
+        </div>
+      </header>
       <div className="font-sans antialiased bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <NextIntlClientProvider messages={messages} locale={locale}>
