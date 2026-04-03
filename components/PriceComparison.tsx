@@ -11,6 +11,7 @@ import type { PriceComparisonProps, ProductSuggestion } from "@/interfaces";
 export function PriceComparison({
   initialQuery = "",
   onClearQuery,
+  onSearch,
   products,
   isLoading = false,
 }: PriceComparisonProps) {
@@ -18,20 +19,19 @@ export function PriceComparison({
   const searchT = useTranslations("search");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
 
+  useEffect(() => {
+    setSearchQuery(initialQuery);
+  }, [initialQuery]);
+
   const lowerQuery = searchQuery.trim().toLowerCase();
 
-  const matchedProducts = useMemo(() => {
-    if (!lowerQuery) {
-      return products;
+  useEffect(() => {
+    if (searchQuery.trim() === "" && initialQuery.trim() !== "") {
+      onClearQuery?.();
     }
+  }, [searchQuery, initialQuery, onClearQuery]);
 
-    return products.filter((product) => {
-      return (
-        product.name_product.toLowerCase().includes(lowerQuery) ||
-        product.link_product.toLowerCase().includes(lowerQuery)
-      );
-    });
-  }, [products, lowerQuery]);
+  const matchedProducts = useMemo(() => products, [products]);
 
   const suggestions = useMemo(() => {
     if (!lowerQuery) {
@@ -85,11 +85,16 @@ export function PriceComparison({
 
   const hasResults = filteredProducts.length > 0;
 
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
+  const handleSubmit = (query: string) => {
+    const trimmed = query.trim();
+
+    if (!trimmed) {
       onClearQuery?.();
+      return;
     }
-  }, [searchQuery, onClearQuery]);
+
+    onSearch?.(trimmed);
+  };
 
   return (
     <div className="w-full">
@@ -98,6 +103,7 @@ export function PriceComparison({
         <SearchBar
           value={searchQuery}
           onChange={setSearchQuery}
+          onSubmit={handleSubmit}
           suggestions={suggestions}
         />
       </div>

@@ -25,6 +25,8 @@ export function SearchLanding({
     const trimmed = query.trim();
 
     if (!trimmed) {
+      setSearchQuery("");
+      router.push(pathname);
       return;
     }
 
