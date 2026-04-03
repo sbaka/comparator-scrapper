@@ -31,14 +31,12 @@ export function PriceComparison({
     }
   }, [searchQuery, initialQuery, onClearQuery]);
 
-  const matchedProducts = useMemo(() => products, [products]);
-
   const suggestions = useMemo(() => {
     if (!lowerQuery) {
       return [];
     }
 
-    const grouped = matchedProducts.reduce(
+    const grouped = products.reduce(
       (acc, product) => {
         if (!acc[product.name_product]) {
           acc[product.name_product] = {
@@ -66,12 +64,12 @@ export function PriceComparison({
         label: suggestion.name,
         subtitle: `${searchT("price")}: ${suggestion.lowestPrice} ${searchT("currency")}`,
       }));
-  }, [matchedProducts, lowerQuery, searchT]);
+  }, [products, lowerQuery, searchT]);
 
   // Search and sort products
   const filteredProducts = useMemo(() => {
-    return sortByPrice(matchedProducts);
-  }, [matchedProducts]);
+    return sortByPrice(products);
+  }, [products]);
 
   // Get best deal and others
   const bestDeal = useMemo(
