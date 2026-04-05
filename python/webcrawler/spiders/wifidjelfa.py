@@ -4,6 +4,9 @@ from webcrawler.items import webCrawlerItem
 
 class wifiDjelfaSpider(SitemapSpider):
     name = "wifiDjelfa"
+    custom_settings = {
+        "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    }
     source_name = "wifi djelfa"
     base_url = "https://wifidjelfa.com/"
     id_source = 3
