@@ -8,7 +8,7 @@ class wifiDjelfaSpider(SitemapSpider):
     base_url = "https://wifidjelfa.com/"
     id_source = 3
     allowed_domains = ["wifidjelfa.com"]
-    sitemap_urls = ["https://wifidjelfa.com/sitemap.xml"]
+    sitemap_urls = ["https://wifidjelfa.com/robots.txt"]
     sitemap_rules = [
          (".*", "parse_product"),
      ]

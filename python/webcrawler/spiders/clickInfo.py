@@ -8,7 +8,7 @@ class clickInfoSpider(SitemapSpider):
     base_url = "https://click-dz.com/"
     id_source = 1
     allowed_domains = ["click-dz.com"]
-    sitemap_urls = ["https://click-dz.com/sitemap_index.xml"]
+    sitemap_urls = ["https://click-dz.com/robots.txt"]
     sitemap_rules = [
          (".*", "parse_product"),
      ]
