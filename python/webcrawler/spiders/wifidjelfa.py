@@ -4,15 +4,11 @@ from webcrawler.items import webCrawlerItem
 
 class wifiDjelfaSpider(SitemapSpider):
     name = "wifiDjelfa"
-    custom_settings = {
-        "ROBOTSTXT_OBEY": False,
-        "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
-    }
     source_name = "wifi djelfa"
     base_url = "https://wifidjelfa.com/"
     id_source = 3
     allowed_domains = ["wifidjelfa.com"]
-    sitemap_urls = ["https://wifidjelfa.com/robots.txt"]
+    sitemap_urls = ["https://wifidjelfa.com/sitemap.xml"]
     sitemap_rules = [
          (".*", "parse_product"),
      ]

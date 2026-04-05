@@ -4,15 +4,11 @@ from webcrawler.items import webCrawlerItem
 
 class clickInfoSpider(SitemapSpider):
     name = "clickInfo"
-    custom_settings = {
-        "ROBOTSTXT_OBEY": False,
-        "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
-    }
     source_name = "click informatique"
     base_url = "https://click-dz.com/"
     id_source = 1
     allowed_domains = ["click-dz.com"]
-    sitemap_urls = ["https://click-dz.com/robots.txt"]
+    sitemap_urls = ["https://click-dz.com/sitemap_index.xml"]
     sitemap_rules = [
          (".*", "parse_product"),
      ]
