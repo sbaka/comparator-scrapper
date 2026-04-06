@@ -9,9 +9,9 @@ const SPIDERS = [
   "maxFrame",
   "ssjStore",
   "wifiDjelfa",
-  "draceshop",
-  "gentech",
-  "itechstore",
+  "dracheShop",
+  "genTechx",
+  "itechStore",
   "zmika",
 ];
 
