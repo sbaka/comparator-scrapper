@@ -23,6 +23,14 @@ def normalize_image_url(url):
         url = "https:" + url
     return url.split("?")[0]
 
+class gamingDzItemLoader(ItemLoader):
+    default_output_processor = TakeFirst()
+    name_in = MapCompose(str.strip)
+    price_in = MapCompose(clean_price)
+    image_url_in = MapCompose(str.strip)
+    category_in = MapCompose(str.strip)
+    id_source_in = MapCompose()
+    
 class informaticsDzItemLoader(ItemLoader):
     default_output_processor = TakeFirst()
     name_in = MapCompose(str.strip)
