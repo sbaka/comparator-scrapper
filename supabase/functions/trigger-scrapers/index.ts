@@ -13,6 +13,8 @@ const SPIDERS = [
   "genTechx",
   "itechStore",
   "zmika",
+  "gamingDz",
+  "informaticsDz",
 ];
 
 async function scheduleSpider(spider: string) {
