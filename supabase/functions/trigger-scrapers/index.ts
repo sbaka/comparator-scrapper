@@ -4,7 +4,16 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SCRAPYD_PROJECT = Deno.env.get("SCRAPYD_PROJECT");
 const SCRAPYD_BASE_URL = Deno.env.get("SCRAPYD_BASE_URL");
 
-const SPIDERS = ["clickInfo", "maxFrame", "ssjStore", "wifiDjelfa"];
+const SPIDERS = [
+  "clickInfo",
+  "maxFrame",
+  "ssjStore",
+  "wifiDjelfa",
+  "draceshop",
+  "gentech",
+  "itechstore",
+  "zmika",
+];
 
 async function scheduleSpider(spider: string) {
   const response = await fetch(`${SCRAPYD_BASE_URL}/schedule.json`, {
