@@ -51,7 +51,7 @@ class duplicatesPipeline:
         else:
             self.seen_links.add(link)
             return item
-        
+
 class SavingToSupabasePipeline(object):
     def __init__(self):
         self.connection = create_client(os.environ.get("NEXT_PUBLIC_SUPABASE_URL"), os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY"))
