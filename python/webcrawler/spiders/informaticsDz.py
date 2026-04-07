@@ -6,7 +6,7 @@ class informaticsDzSpider(SitemapSpider):
     name = "informaticsDz"
     source_name = "informatics dz"
     base_url = "https://informatics-dz.com/"
-    id_source = 1
+    id_source = 9
     allowed_domains = ["informatics-dz.com"]
     sitemap_urls = ["https://informatics-dz.com/robots.txt"]
     sitemap_rules = [
