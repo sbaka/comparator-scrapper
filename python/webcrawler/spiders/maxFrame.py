@@ -9,7 +9,20 @@ class maxFrameSpider(SitemapSpider):
     base_url = "https://maxframe.dz/"
     id_source = 4
     allowed_domains = ["maxframe.dz"]
-    sitemap_urls = ["https://maxframe.dz/robots.txt"]
+    # MaxFrame intermittently breaks chunked responses with curl_cffi/impersonate.
+    # Use Scrapy's native HTTP handler for this spider only.
+    custom_settings = {
+        "DOWNLOAD_HANDLERS": {
+            "http": "scrapy.core.downloader.handlers.http.HTTPDownloadHandler",
+            "https": "scrapy.core.downloader.handlers.http.HTTPDownloadHandler",
+        },
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy_impersonate.RandomBrowserMiddleware": None,
+        },
+        "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "ROBOTSTXT_OBEY": False,
+    }
+    sitemap_urls = ["https://www.maxframe.dz/sitemap/article.xml"]
     sitemap_rules = [
          ("/", "parse_product"),
      ]
