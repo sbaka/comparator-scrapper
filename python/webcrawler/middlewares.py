@@ -4,6 +4,13 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.http import HtmlResponse
+from twisted.internet.threads import deferToThread
+
+try:
+    import cloudscraper  # type: ignore[import-not-found]
+except ImportError:  # pragma: no cover - optional dependency
+    cloudscraper = None
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
@@ -98,3 +105,72 @@ class WebcrawlerDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+
+
+class CloudscraperFallbackMiddleware:
+    """Optional fallback that retries blocked pages with Cloudscraper.
+
+    Enable globally with CLOUDSCRAPER_ENABLED, or per-request by setting
+    request.meta["use_cloudscraper"] = True.
+    """
+
+    def __init__(self, enabled, retry_http_codes, timeout, browser_profile):
+        self.enabled = enabled
+        self.retry_http_codes = {int(code) for code in retry_http_codes}
+        self.timeout = timeout
+        self.browser_profile = browser_profile
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        settings = crawler.settings
+        return cls(
+            enabled=settings.getbool("CLOUDSCRAPER_ENABLED", False),
+            retry_http_codes=settings.getlist("CLOUDSCRAPER_RETRY_HTTP_CODES", [403, 429, 503]),
+            timeout=settings.getfloat("CLOUDSCRAPER_TIMEOUT", 30),
+            browser_profile=settings.getdict(
+                "CLOUDSCRAPER_BROWSER",
+                {"browser": "chrome", "platform": "windows", "mobile": False},
+            ),
+        )
+
+    def process_response(self, request, response, spider):
+        if not self.enabled and not request.meta.get("use_cloudscraper", False):
+            return response
+
+        if cloudscraper is None:
+            spider.logger.warning(
+                "Cloudscraper fallback requested but cloudscraper is not installed."
+            )
+            return response
+
+        if not request.meta.get("use_cloudscraper", False) and response.status not in self.retry_http_codes:
+            return response
+
+        return deferToThread(self._fetch_with_cloudscraper, request, response, spider)
+
+    def _fetch_with_cloudscraper(self, request, original_response, spider):
+        try:
+            scraper = cloudscraper.create_scraper(browser=self.browser_profile)
+            headers = request.headers.to_unicode_dict()
+            data = request.body if request.body else None
+
+            cloud_response = scraper.request(
+                method=request.method,
+                url=request.url,
+                headers=headers,
+                data=data,
+                timeout=self.timeout,
+                allow_redirects=True,
+            )
+
+            return HtmlResponse(
+                url=cloud_response.url or request.url,
+                status=cloud_response.status_code,
+                headers=dict(cloud_response.headers),
+                body=cloud_response.content,
+                encoding=cloud_response.encoding or "utf-8",
+                request=request,
+            )
+        except Exception as exc:  # pragma: no cover - network dependent
+            spider.logger.warning("Cloudscraper fallback failed: %s", exc)
+            return original_response
