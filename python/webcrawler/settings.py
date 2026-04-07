@@ -57,7 +57,6 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
 #    "webcrawler.middlewares.WebcrawlerDownloaderMiddleware": 543,
-    "webcrawler.middlewares.CloudscraperFallbackMiddleware": 560,
     "scrapy_impersonate.RandomBrowserMiddleware": 1000,
 }
 
@@ -71,17 +70,6 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 RETRY_ENABLED = True
 RETRY_TIMES = 3
 RETRY_HTTP_CODES = [403, 408, 429, 500, 502, 503, 504, 522, 524]
-
-# Cloudscraper fallback is disabled by default and can be enabled globally
-# or per request via request.meta["use_cloudscraper"] = True.
-CLOUDSCRAPER_ENABLED = True
-CLOUDSCRAPER_RETRY_HTTP_CODES = [403, 429, 503]
-CLOUDSCRAPER_TIMEOUT = 30
-CLOUDSCRAPER_BROWSER = {
-    "browser": "chrome",
-    "platform": "windows",
-    "mobile": False,
-}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
