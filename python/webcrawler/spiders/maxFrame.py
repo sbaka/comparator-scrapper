@@ -37,7 +37,7 @@ class maxFrameSpider(SitemapSpider):
         loader.add_value("link", response.url)
         # Take sale price if exists, otherwise take regular price
         loader.add_css("price", "div.ar-cont span.price::text")
-        loader.add_css("image_url", "img::attr(src)")
+        loader.add_css("image_url", "div.photos img::attr(src)")
         loader.add_value("category", "idk man")
         loader.add_value("base_url", self.base_url)
         loader.add_value("id_source", self.id_source)
